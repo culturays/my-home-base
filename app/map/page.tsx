@@ -1,4 +1,4 @@
-import Map from '@/components/Map';
+ 
 
 // Mock data – replace this with DB fetch
 const products = [
@@ -17,8 +17,7 @@ const products = [
 export default function MapPage() {
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Live Product Map</h1>
-      <Map products={products} />
+    
     </div>
   );
 }
