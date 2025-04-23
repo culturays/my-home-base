@@ -1,13 +1,13 @@
 'use client'
 
-const Hero = () => {
-  return (
+const TopHero = () => {
+  return ( 
     <div>
        <section className="relative"> 
         <video width="320" height="240"  
           className="w-full h-screen object-cover"
           controls
-          // autoPlay={true}
+          autoPlay={true}
           loop>
   <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
   <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
@@ -23,4 +23,4 @@ const Hero = () => {
   )
 }
 
-export default Hero
+export default TopHero

@@ -1,5 +1,5 @@
  
-import Hero from "../components/Hero"; 
+import TopHero from "../components/TopHero"; 
 import Link from "next/link";
  
  const Home= async() =>{
@@ -7,7 +7,7 @@ import Link from "next/link";
     <>
  <div className="min-h-screen">   
    
-   <Hero /> 
+   <TopHero /> 
       {/* Featured Sections */}
       <section className="container mx-auto py-16">
         <h2 className="text-3xl font-bold mb-8">Our Services</h2>
