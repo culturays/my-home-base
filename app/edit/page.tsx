@@ -39,11 +39,8 @@ export default function EditProduct() {
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <input name="name" value={form.name} onChange={handleChange} className="input" />
-      <input name="price" value={form.price} onChange={handleChange} className="input" />
-      <input name="stock" value={form.stock} onChange={handleChange} className="input" />
-      <input name="lat" value={form.lat} onChange={handleChange} className="input" />
-      <input name="lng" value={form.lng} onChange={handleChange} className="input" />
+      <input name="name" value={form.name} onChange={handleChange} className="input" /> 
+  
       <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Update</button>
     </form>
   );
