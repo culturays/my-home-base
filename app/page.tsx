@@ -1,6 +1,5 @@
  
-import Hero from "../components/Hero";
-import Image from "next/image";
+import Hero from "../components/Hero"; 
 import Link from "next/link";
  
  const Home= async() =>{
