@@ -66,4 +66,9 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .input {
+    @apply border rounded p-2 w-full;
+  }
+  
 }

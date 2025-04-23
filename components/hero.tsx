@@ -1,44 +1,26 @@
-import NextLogo from "./next-logo";
-import SupabaseLogo from "./supabase-logo";
+'use client'
 
-export default function Header() {
+const Hero = () => {
   return (
-    <div className="flex flex-col gap-16 items-center">
-      <div className="flex gap-8 justify-center items-center">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="border-l rotate-45 h-6" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
-      </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-        The fastest way to build apps with{" "}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{" "}
-        and{" "}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
-      </p>
-      <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
+    <div>
+       <section className="relative"> 
+        <video width="320" height="240"  
+          className="w-full h-screen object-cover"
+          controls
+          // autoPlay={true}
+          loop>
+  <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
+  <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
+ </video>
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white">
+          <h1 className="text-5xl font-bold">Keep it Going...</h1>
+          <p className="mt-4 text-lg">
+            Luxury Services for Discerning Clients.
+          </p>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
+
+export default Hero

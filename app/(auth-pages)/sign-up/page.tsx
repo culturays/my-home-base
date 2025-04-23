@@ -1,11 +1,12 @@
-import { signUpAction } from "@/app/actions";
+import { handleOauthLogin, signUpAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
-
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link"; 
+ 
 export default async function Signup(props: {
   searchParams: Promise<Message>;
 }) {
@@ -45,7 +46,9 @@ export default async function Signup(props: {
           <FormMessage message={searchParams} />
         </div>
       </form>
-      <SmtpMessage />
+ 
+       <small className="text-white text-center cursor-pointer">or </small> 
+   <button type="submit" formAction={handleOauthLogin} className="bg-tranparent"><p className="text-white cursor-pointer p-2 text-lg bg-gray-700 my-2 hover:text-gray-400"><FontAwesomeIcon icon={faGoogle} className="px-2"/>Sign in with Google</p></button>
     </>
   );
 }
