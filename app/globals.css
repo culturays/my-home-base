@@ -72,3 +72,11 @@
   }
   
 }
+body{
+  overflow:hidden;
+  font-size:100%;
+ }
+ html{
+  overflow-x:hidden;
+ }
+ 

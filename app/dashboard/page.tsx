@@ -1,56 +1,69 @@
  
 import Link from 'next/link'; 
 import { createClient } from '@/utils/supabase/server';
-import { returnProducts } from '../products/return-products';
-import Image from 'next/image';
-
-const DashboardPage = async()=> {
-  const handleDelete = async (id: string) => {
-    const supabase=await createClient()
-    const { error } = await supabase
-    .from('listed-e')
-    .delete()
-    .eq('id', id)    
+import { postedBy, assignedErrands, userReviews, prevClients, returnUnsassignedProducts } from '../products/return-products';
+import { type User } from '@supabase/supabase-js'
+import { redirect } from 'next/navigation';
+import Client from '@/components/Dashboard/Client';
+import Provider from '@/components/Dashboard/Provider'; 
+import { getClientStats } from './actions/get-client-stat';
+import { invitedTo, receivedInterestsToJobs } from './actions/invite-providers';
+import { getNotifed } from './actions/get-messages';
+const userObj =async()=>{
+    const supabase =await createClient();
+    const { 
+      data: { user }, 
+      } = await supabase.auth.getUser();
+    if (!user){  
+     redirect ('/sign-in')
     
-   // await axios.delete(`/api/products/${id}`);
-    //setProducts(products.filter((p: any) => p._id !== id));
-    //onClick={() => handleDelete(p._id)} 
-  };
- const products =await returnProducts()
+    }
+   return user as User
+  }
+const DashboardPage = async()=> {
+ const user = await userObj();
+const roleData = async ()=>{
+  const supabase =await createClient();
+  const { data: userRole } = await supabase
+    .from('profiles')
+    .select('role, address')
+    .eq('id', user?.id)
+    .single()
 
-  return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">My Products</h1>
-        <Link href="/dashboard/create" className="bg-blue-600 text-white px-4 py-2 rounded">
-          + Add Product
-        </Link>
-      </div>
-      <table className="w-full text-left border">
-        <thead>
-          <tr>
-            <th className="p-2">Name</th>
-            <th>Desc</th>
-            <th >Photo</th>
-            <th className="text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p: any) => (
-           <tr key={p.id} className="border-t">
-                <td className="p-2">{p.title}</td>
-              <td> {p.desc}</td>            
-             <td><Image src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${p.images[0]}`} width={80} height={80} alt={p.title}/> 
-              </td>
-              <td><Link href={`/errand/${p.slug}`}>View</Link> </td>
-              <td className="text-right space-x-2"><Link href={`/dashboard/edit/${p.id}`} className="text-blue-500">Edit</Link>
-                <button className="text-red-500">Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      if (!userRole?.role ||userRole?.role ==='none'&& user?.email=== 'ngene.christina@gmail.com'){ 
+    redirect('/dashboard/admin')
+  } 
+    if(userRole?.role=== 'admin')redirect('/dashboard/admin')
+    return userRole
+}
+
+const productsX= await returnUnsassignedProducts()
+const products =await postedBy()
+const receivedItx =await receivedInterestsToJobs()
+const userRole= await roleData() 
+const recentProviders = await assignedErrands() 
+const userXReviews =await userReviews()
+const clientStats =await getClientStats()
+const recentCli = await prevClients()  
+const notices = await getNotifed(user?.id)
+const invitedX= await invitedTo()
+
+return (
+<div className=''> 
+ <div className='py-6 flex justify-center'>
+      <h1 className="text-3xl font-bold text-teal-800">Errand Services Dashboard</h1>
+      <p className="text-lg text-gray-600 capitalize mx-2"> <strong>{userRole?.role}</strong></p>
+   </div>
+   {userRole?.role === 'client' ? (
+  <Client errands={products} reviews={userXReviews} recentProviders={recentProviders } user={user}clientStats={clientStats} notices={notices} receivedItx={receivedItx} userLocation={userRole.address}/>
+) : userRole?.role === 'provider' ?(
+  <Provider reviews={userXReviews} recentCli={recentCli} jobs={productsX} products={invitedX} user={user} clientStats={clientStats} notices={notices} userLocation={userRole.address}/>
+):
+(<div className="text-2xl font-bold text-teal-800 p-6"><Link href='/edit'>Update Profile to View Page</Link></div>)
+}  
+
+</div>
+
   );
 }
 export default DashboardPage

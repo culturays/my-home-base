@@ -1,262 +1,94 @@
-import { returnProducts } from "../products/return-products";
+import Link from "next/link"
 
-const ServicesPage=async () =>{
-
-  
+const ServicesPage=() =>{
   return (
-    <div className=" min-h-screen">     
-         <h2>Explore our Categories</h2>   
+    <div className="bg-white text-gray-800">
+      {/* Hero */}
+      <section className="bg-teal-600 text-white py-20 px-6 text-center">
+        <h1 className="text-4xl font-bold mb-4">What We Offer</h1>
+        <p className="max-w-xl mx-auto text-lg">
+          Our online marketplace connects clients with trusted service providers — fast and easy.
+        </p>
+      </section>
 
-      {/* Filters & Sorting */}
-      <aside className=" p-4">
-        <h2 className="text-xl font-bold mb-4">Filters</h2>
-        <div className="mb-4">
-          <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
-            Category:
-          </label>
-          <select
-            id="category"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option>All</option>
-            <option>Photography</option>
-            <option>Videography</option>
-            <option>Drone Services</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="sort" className="block text-gray-700 text-sm font-bold mb-2">
-            Sort By:
-          </label>
-          <select
-            id="sort"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option>Newest Arrivals</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
-        </div>
-      </aside>
-
-      {/* Product Grid */}
-      <section className="container mx-auto py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
+      {/* Service Categories */}
+      <section className="py-16 px-6 max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-teal-700 mb-10 text-center">Our Core Services</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            {
+              icon: '🧹',
+              title: 'Home & Cleaning',
+              desc: 'Book trusted cleaners, repair experts, or home help near you.',
+            },
+            {
+              icon: '🚚',
+              title: 'Errand & Delivery',
+              desc: 'Need something picked up or delivered? Our errand runners got you.',
+            },
+            {
+              icon: '💻',
+              title: 'Tech Support',
+              desc: 'Hire freelancers for design, websites, and tech support services.',
+            },
+            {
+              icon: '📝',
+              title: 'Content & Writing',
+              desc: 'Writers, bloggers, and editors ready to assist with your content needs.',
+            },
+            {
+              icon: '📸',
+              title: 'Photography & Media',
+              desc: 'Book local photographers, videographers, or editors.',
+            },
+            {
+              icon: '👷‍♂️',
+              title: 'Specialized Services',
+              desc: 'Plumbers, electricians, tutors, stylists, and more — just a click away.',
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="bg-orange-50 p-6 rounded-xl shadow hover:shadow-lg transition"
+            >
+              <div className="text-4xl mb-4">{item.icon}</div>
+              <h3 className="text-xl font-bold text-orange-600 mb-2">{item.title}</h3>
+              <p className="text-gray-700">{item.desc}</p>
             </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <div className="bg-gray-100 min-h-screen">
-     
-      {/* Navigation */}
-      <nav className="bg-white py-4">
-        <div className="container mx-auto flex justify-between">
-          <div className="text-2xl font-bold">Logo</div>
-          <ul className="flex space-x-8">
-            <li>
-              <a href="#" className="hover:text-gray-700">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-gray-700">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-gray-700">
-                Services
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-gray-700">
-                Portfolio
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-gray-700">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      {/* Filters & Sorting */}
-      <aside className="bg-white p-4">
-        <h2 className="text-xl font-bold mb-4">Filters</h2>
-        <div className="mb-4">
-          <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
-            Category:
-          </label>
-          <select
-            id="category"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option>All</option>
-            <option>Photography</option>
-            <option>Videography</option>
-            <option>Drone Services</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="sort" className="block text-gray-700 text-sm font-bold mb-2">
-            Sort By:
-          </label>
-          <select
-            id="sort"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option>Newest Arrivals</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
-        </div>
-      </aside>
-
-      {/* Product Grid */}
-      <section className="container mx-auto py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
+      {/* How It Works */}
+      <section className="bg-teal-50 py-16 px-6">
+        <h2 className="text-3xl font-bold text-teal-700 mb-10 text-center">How It Works</h2>
+        <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto text-center">
+          {[
+            { step: '1. Post a Task', desc: 'Describe the service you need in a few steps.' },
+            { step: '2. Get Matched', desc: 'We connect you with trusted providers nearby.' },
+            { step: '3. Chat & Agree', desc: 'Discuss terms, pricing, and confirm the job.' },
+            { step: '4. Complete & Pay', desc: 'Service is delivered, payment is processed.' },
+          ].map((item, i) => (
+            <div key={i} className="bg-white rounded-xl shadow p-6 border-t-4 border-teal-500">
+              <h3 className="text-xl font-semibold text-orange-600">{item.step}</h3>
+              <p className="mt-2 text-gray-600">{item.desc}</p>
             </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
-           {/* Product Card */}
-          <div className="bg-white rounded-lg shadow">
-            <img
-              src="/product-image.jpg"
-              alt="Product Image"
-              className="w-full h-64 object-cover rounded-t-lg"
-            />
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2">Product Name</h3>
-              <p className="text-gray-700">$99.99</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                View Details
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
+
+      {/* CTA */}
+      <section className="text-center py-20 px-6">
+        <h2 className="text-3xl font-bold text-teal-700 mb-4">Ready to get started?</h2>
+        <p className="mb-6 text-gray-700">Sign up now to post a task or offer your services.</p>
+        <Link
+          href="/sign-up"
+          className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-xl text-lg font-semibold shadow"
+        >
+          Join the Marketplace
+        </Link>
+      </section>
     </div>
-      
-    </div>
-  );
+  )
 }
-export default ServicesPage
+export default ServicesPage 

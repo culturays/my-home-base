@@ -15,7 +15,7 @@ const TopHero = () => {
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white">
           <h1 className="text-5xl font-bold">Keep it Going...</h1>
           <p className="mt-4 text-lg">
-            Luxury Services for Discerning Clients.
+            Luxury Services for Busy Clients.
           </p>
         </div>
       </section>

@@ -1,35 +1,31 @@
-import { signOutAction } from "@/app/actions"; 
-import Link from "next/link"; 
-import { Button } from "./ui/button";
+ 
+import Link from "next/link";  
+import HeaderDrop from "./HeaderDrop"; 
+import { signOutAction } from "@/app/actions";
 import { createClient } from "@/utils/supabase/server";
-
-export default async function AuthButton() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-
+import { Button } from "./ui/button";
+export default async function AuthButton() { 
+ const supabase = await createClient() 
+         const { 
+            data: { user }, 
+     } = await supabase.auth.getUser(); 
+ 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
-          Sign out
-        </Button>
-      </form>
-    </div>
+    <div className="flex gap-4"> 
+        <h2 className="w-20 xs:w-full text-ellipsis overflow-hidden">Hey, {user?.email}!</h2> 
+      <HeaderDrop/> 
+       
+   </div>
   ) 
   
   : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
+              <Button asChild size="sm" variant={"outline"} className="text-teal-800 font-medium">
         <Link href="/sign-in">Sign in</Link>
       </Button>
-      <Button asChild size="sm" variant={"default"}>
+      <Button asChild size="sm"className="bg-orange-800">
         <Link href="/sign-up">Sign up</Link>
-      </Button>
+      </Button> 
     </div>
   );
  }

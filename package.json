@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start"
   },
@@ -16,20 +16,31 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@react-google-maps/api": "^2.20.6",
+    "@sendgrid/mail": "^8.1.5",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.1",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/file-saver": "^2.0.7",
+    "@types/stripe-v3": "^3.1.33",
+    "@types/web-push": "^3.6.4",
     "autoprefixer": "10.4.20",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "file-saver": "^2.0.5",
     "lucide-react": "^0.468.0",
+    "micro": "^10.0.1",
     "next": "latest",
     "next-themes": "^0.4.3",
     "prettier": "^3.3.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.55.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "resend": "^4.5.2",
+    "stripe": "^18.2.1",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@types/node": "22.10.2",

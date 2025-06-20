@@ -1,16 +1,17 @@
 "use server";
-
+import  * as webpush from 'web-push'
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-
+import { redirect } from "next/navigation"; 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const full_name = formData.get("fullname")?.toString();
+   const role = formData.get("role")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
-
+ 
   if (!email || !password) {
     return encodedRedirect(
       "error",
@@ -18,12 +19,13 @@ export const signUpAction = async (formData: FormData) => {
       "Email and password are required",
     );
   }
-
+  
   const { error } = await supabase.auth.signUp({
     email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
+    password, 
+    options: {         
+        data: { full_name, role } ,    
+        emailRedirectTo: `${origin}/auth/callback`,
     },
   });
 
@@ -124,7 +126,8 @@ export const resetPasswordAction = async (formData: FormData) => {
     );
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
+ encodedRedirect("success", "/protected/reset-password", "Password updated");
+
 };
 
 export const signOutAction = async () => {
@@ -136,20 +139,94 @@ export const signOutAction = async () => {
 export const handleOauthLogin = async () => { 
   const origin = (await headers()).get("origin"); 
   const supabase =await createClient(); 
-  const referer = (await headers()).get("x-url");  
-  console.log(referer)
-  const redirectTo = referer
-  ? `${referer}/auth/callback?redirect_to=${encodeURIComponent('/')}`
-  : `${referer}/auth/callback`; 
+  const referer = (await headers()).get("referer"); 
+ 
+  const redirectTo = origin
+  ? `${origin}/auth/callback?redirect_to=${encodeURIComponent('/')}`
+  : `${origin}/auth/callback`; 
+  
     const { data, error } = await supabase.auth.signInWithOAuth({
    provider: 'google',  
    options: { 
-   redirectTo ,
+   redirectTo:`${origin}/auth/callback` ,
   }, 
     })
    if (error instanceof Error) {
       console.error(error); 
      //return error.message       
   }
+ 
   return redirect(data.url as string);
  };
+ 
+ export const deleteUser = async (userId:number | string) => {
+  const supabase = await createClient();
+   const { error } = await supabase.auth.admin.deleteUser(userId as string);
+  return redirect("/");
+};
+webpush.setVapidDetails(
+  'mailto:your-email@gmail.com',
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+)
+ 
+let subscription: PushSubscription | null = null;
+ function arrayBufferToBase64(buffer: ArrayBuffer | null): string {
+  if (!buffer) return '';
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+export async function subscribeUser(sub: PushSubscription ) {
+  subscription = sub;
+   const p256dh = arrayBufferToBase64(sub.getKey('p256dh'));
+  const auth = arrayBufferToBase64(sub.getKey('auth'));
+  const supabase = await createClient()
+ const { data, error } = await supabase
+    .from('subscriptions')
+    .insert({
+      endpoint: sub.endpoint,
+      expirationTime: sub.expirationTime,
+      keys: {
+        p256dh ,
+        auth 
+      }
+    })
+    .select();
+  return { success: true }
+}
+ 
+export async function unsubscribeUser(user_id: number) {
+  subscription = null
+    const supabase = await createClient()
+const { error } = await supabase
+  .from('subscriptions')
+  .delete()
+  .eq('user_id', user_id)
+
+  // In a production environment, you would want to remove the subscription from the database
+  // For example: await db.subscriptions.delete({ where: { ... } })
+  return { success: true }
+}
+ 
+export async function sendNotification(message: string) {
+  if (!subscription) {
+    throw new Error('No subscription available')
+  }
+ 
+  try {
+    // await webpush.sendNotification(
+    //   subscription,
+    //   JSON.stringify({
+    //     title: 'Test Notification',
+    //     body: message,
+    //     icon: '/icon.png',
+    //   })
+    // )
+    return { success: true }
+  } catch (error) {
+    console.error('Error sending push notification:', error)
+    return { success: false, error: 'Failed to send notification' }
+  }
+}

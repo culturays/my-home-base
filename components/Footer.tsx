@@ -1,39 +1,46 @@
-import { ThemeSwitcher } from "./theme-switcher"
+'use client'
 
+import Link from 'next/link' 
+import { Facebook, Instagram, Twitter } from 'lucide-react'
+import { ThemeSwitcher } from './theme-switcher'
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <div>
-    <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16 bg-gray-800 text-white py-8">
-     
-        <div className="container mx-auto text-center">
-          <p>&copy; {new Date().getFullYear()} Nuttis Errands. All rights reserved.</p>
-          <div className="mt-4 flex justify-center space-x-4">
-            <a href="#" className="hover:text-gray-300">
-              Facebook
+    <footer className="w-full bg-teal-700 text-white border-t py-10 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+        {/* Column 1 */}
+        <div className="flex flex-col items-center md:items-start gap-2">
+          <Link href="/privacy-policy" className="text-orange-300 hover:text-orange-400">
+            Privacy Policy
+          </Link>
+         
+        </div>
+
+        {/* Column 2 */}
+        <div className="text-center flex flex-col items-center justify-center">
+          <p className="text-xs">&copy; {new Date().getFullYear()} E Market. All rights reserved.</p>
+          <ThemeSwitcher />
+        </div>
+
+        {/* Column 3 */}
+        <div className="flex flex-col items-center md:items-end">
+          <p className="mb-2 text-orange-300 font-medium">Follow us</p>
+          <div className="flex gap-4">
+            <a href="#" className="hover:text-orange-400" aria-label="Facebook">
+              <Facebook size={20} />
             </a>
-            <a href="#" className="hover:text-gray-300">
-              Instagram
+            <a href="#" className="hover:text-orange-400" aria-label="Instagram">
+              <Instagram size={20} />
             </a>
-            <a href="#" className="hover:text-gray-300">
-              Twitter
+            <a href="#" className="hover:text-orange-400" aria-label="Twitter">
+              <Twitter size={20} />
             </a>
           </div>
         </div>
- <p>
-   Powered by{" "}
-     <a href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-                    target="_blank"
-                    className="font-bold hover:underline"
-                    rel="noreferrer"
-                  >
-                    Supabase
-                  </a>
-                </p>
-                <ThemeSwitcher />
-              </footer> 
-    </div>
+      </div>
+     
+    </footer>
   )
 }
 
-export default Footer
+ 
