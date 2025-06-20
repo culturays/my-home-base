@@ -1,14 +1,12 @@
 import type { Stripe } from "stripe"; 
 import PrintObject from "@/components/PrintObject";
 import { stripe } from "@/lib/stripe";
-
-
-export default async function ResultPage({
+const ResultPage=async({
   searchParams,
 }: {
-  searchParams: { payment_intent: string };
-}) {
-  const {payment_intent }=await searchParams
+  searchParams:  Promise<{ payment_intent: string }>;
+}) =>{
+  const { payment_intent }=await searchParams
   if (!payment_intent)
     throw new Error("Please provide a valid payment_intent (`pi_...`)");
 
@@ -23,3 +21,5 @@ export default async function ResultPage({
     </>
   );
 }
+
+export default ResultPage
