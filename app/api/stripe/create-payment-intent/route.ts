@@ -3,7 +3,7 @@ import { stripe } from '@/lib/stripe';
 import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
  
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   if (req.method !== 'POST') {
     return NextResponse.json({ error: 'Method Not Allowed' }, {status:405});
   }
