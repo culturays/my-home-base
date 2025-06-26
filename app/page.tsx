@@ -29,7 +29,7 @@ import Link from "next/link";
              { icon: '🧹', title: 'Cleaning', desc: 'Book trusted cleaners near you.' },
             { icon: '🚚', title: 'Delivery', desc: 'Errand and parcel delivery on demand.' },
             { icon: '💻', title: 'Freelance Tech', desc: 'Web dev, design, IT & more.' },
-            { icon: '💻', title: 'Car/Gadget Related', desc: ' No time for gadget care? Whether it&apos;s an oil change, wash, or registration, let someone else take the wheel on your vehicle tasks.' },
+            { icon: '💻', title: 'Car/Gadget Related', desc: "No time for gadget care? Whether it's an oil change, wash, or registration, let someone else take the wheel on your vehicle tasks."},
             { icon: '💻', title: 'Administrative & Paperwork/Professional Tasks', desc: 'Need help with work-related errands? Get support with document runs, printing, office supply pickups, or remote work setups.\nSkip the long queues at banks and offices. Get help with paperwork, payments, and in-person tasks that take up your workday.' },
             { icon: '💻', title: 'Pick Ups/Drop Offs/Pet care', desc: 'Avoid missing important deliveries or rushing to the pickup point. Let someone handle the wait or fetch items on your behalf.\nYour pets need care too! Book helpers for walks, grooming, vet visits, and supply runs—so your furry friends stay happy.' },
           ].map((service, i) => (

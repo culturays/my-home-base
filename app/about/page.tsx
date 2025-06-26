@@ -12,11 +12,11 @@ const AboutPage = async () => {
     .select('*, profileItems:profiles!roles_user_id_fkey(*)')
     .eq('user_id', user.id)
     .single()
-
+ 
     return userRole
 }
 const userAdminRoles= await roleData()
-const [full_name]= userAdminRoles
+ 
   return (
     <> 
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -43,7 +43,7 @@ const [full_name]= userAdminRoles
         <div className="grid md:grid-cols-3 gap-6">
           <div className="text-center">
             <Image src="/popcorn.png" alt="Team Member 1" width={150} height={150} className="mx-auto rounded-full" />
-            <p className="font-bold mt-2">{full_name}</p>
+            <p className="font-bold mt-2">{userAdminRoles.profileItems.full_name}</p>
             <p className="text-sm ">Operations Lead</p>
           </div>    
        

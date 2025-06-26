@@ -362,8 +362,7 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
   <div onClick={fetchXview} >
 <p className="block text-lg hover:bg-teal-800 hover:text-white font-semibold mb-2 text-black opacity-80 cursor-pointer shadow-xl p-4 rounded underline w-max"> View as Client</p>
 </div> 
-</div>
- 
+</div> 
 
 <div className="relative shadow-md sm:rounded-lg z xl:w-[900px] 2xl:w-[1000px]">
 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

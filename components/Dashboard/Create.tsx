@@ -63,13 +63,13 @@ async function handleFormAction(prevState: any, formData: FormData) {
   };
  
   return (
-<div>
+<div className="max-w-2xl mx-auto">
 <h2 className="text-3xl text-gray-200 rounded font-bold bg-black p-6 w-max">{id?'Edit Request':'Create Request'}</h2>
 <form action={formAction} className="p-4 space-y-4 dark:border">
 
 <div className="text-lg py-2"> 
 <label>Title</label>
-<input name="title" placeholder="Braid Hair, Fetch Water, Usher, Wash Car" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700" 
+<input name="title" placeholder="Braid Hair, Usher, Wash Car" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700" 
 value={inputValue.title||jobEdit?.title||''}
 onChange={handleChange}/>
 </div>
