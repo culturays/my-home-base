@@ -17,7 +17,7 @@ const Invites = ({ product, invitedX, job}:{ product:ProfileProps[], invitedX:In
   
   return (
       <div>
-       <h2 className='text-2xl underline dark:text-gray-300 font-bold'>Your task got {product?.length} interest(s)</h2>
+       <h2 className='text-2xl underline dark:text-gray-300 font-bold'>This task has gotten {product?.length} interest(s)</h2>
       {product?.map((xy, ix)=>       
          <div key={xy.id} className='flex'> 
           {xy?.user_img&&xy?.user_img[0]&&<div className="overflow-hidden shadow-lg">

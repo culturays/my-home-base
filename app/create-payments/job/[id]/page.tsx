@@ -42,7 +42,7 @@ const clientIVT=await checkIvs()
 const invitedX = clientIVT?.map((vx)=> vx )
 
 return (
-<div>
+<div className='max-w-max mx-auto'>
  {/* Breadcrumbs */}
 <nav className="text-sm mb-8">
   <Link href="/" className="hover:text-black transition">Home</Link>
@@ -54,15 +54,22 @@ return (
 <section className="mb-10 m-auto">
   {/* Product Image */}
   <Invites product={product.p} invitedX={invitedX} job={product.listedX} />
-  <div className='max-w-xl'>
+  <div className='max-w-lg'>
  <div className="rounded-xl overflow-hidden shadow-lg">
-    <Image
+  { product.listedX.images.length>0&& <Image
       src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${product.listedX.images[0]}`}
       alt={product.listedX.title}
     width={700}
     height={350}
       className="rounded-xl"
-    />
+    />}
+     {product.listedX.images.length===0&& <Image
+      src='/popcorn.png'
+      alt={product.listedX.title}
+    width={700}
+    height={350}
+      className="rounded-xl"
+    />}
   </div> 
 
   {/* Product Details */}

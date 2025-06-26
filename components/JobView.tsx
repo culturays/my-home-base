@@ -18,7 +18,7 @@ const JobView = ({product, user_errands, related, id, data }:{product:ErrandProp
   fetch(`/api/stripe/create-payment-intent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, amount:product.amount, email:data.email, user_full_name:data?.full_name, job_title:product.title, user_id:data?.id }),
+      body: JSON.stringify({ id, amount:product.amount, email:data?.email, user_full_name:data?.full_name, job_title:product.title, user_id:data?.id }),
     })
       .then((res) => res.json()) 
       .then((data) => 

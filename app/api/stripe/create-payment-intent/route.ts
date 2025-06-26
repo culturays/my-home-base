@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     amount: resp.amount,
     currency: 'usd',
     metadata: { job_id: resp.id, user_id:resp.user_id, user_full_name:resp.user_full_name},
-    receipt_email: resp.email,  
+    receipt_email: resp?.email,  
    //// payment_method_types: ['card'],
     automatic_payment_methods: { enabled: true }, 
   
