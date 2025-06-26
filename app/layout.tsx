@@ -106,13 +106,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen flex flex-col items-center">
-            <div className="flex-1 w-full flex flex-col gap-20 items-center">
-              <div className="w-full flex justify-center shadow-2xl">
+          <main className="min-h-screen">
+            <div className="w-full">
                 <div className="w-full flex justify-between items-center p-5 text-sm bg-teal-700 text-white shadow-md">
                      <Header/>
-                      <HeaderAuth />  
-                </div> 
+                      <HeaderAuth /> 
           </div>
           <div className="flex flex-col p-5">
                 {children}

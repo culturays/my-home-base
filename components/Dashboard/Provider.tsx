@@ -41,8 +41,7 @@ const removeRow = products.map((xy:ErrandProps)=> xy.providerJobs.id)
    const openFxn =(id:string|number)=>{
     setOpenId(id)
     setOpen(true)
-   } 
-  
+   }  
 
   const handleSend = async (id:string|number) => { 
     if (!input.trim()) return;
@@ -187,7 +186,7 @@ href="/create-payments/"
 {/* <p className="text-2xl font-bold">{clientStats?.pending_payments}</p>last ten total payments  */}
 </div>
 </div>
-<div className="flex justify-end items-right my-6 ">
+<div className="flex justify-end items-right my-6">
 <Link
 href="/dashboard/create/"
 className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl shadow-sm transition"
@@ -195,8 +194,10 @@ className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl sha
 + Post New Errand
 </Link>      
 </div>
+
+<div className="max-w-xl sm:max-w-2xl md:max-w-3xl min-[800px]:max-w-4xl min-[1000px]:max-w-5xl min-[1200px]:max-w-6xl min-[1200px]:px-0 xl:max-w-[1400px] mx-auto overflow-hidden">
+  
 <div>
-<div className="mt-8">
 <h2 className="text-xl font-bold mb-4 text-teal-800 dark:text-gray-300">Your Reviews</h2>
 <div className="space-y-4 flex">
 {reviews.map((review) => (
@@ -219,12 +220,12 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
 </div> 
 </div> 
 
-<div className="flex flex-col min-[1200px]:flex-row gap-2 bg-teal-50 p-8">
+<div className="flex flex-col min-[1200px]:flex-row gap-2 bg-teal-50 p-4 overflow-x-auto">
 { !viewAll&&
-  <aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+  <aside className="bg-white shadow-lg rounded-xl p-6 w-5/6 xs:w-80 m-auto">
       <h2 className="text-xl font-bold text-teal-700 mb-4">Filters</h2>
 
-      {/* Category Filter */}
+      {/* Category Filter*/}
       <div className="mb-6 max-w-md mx-auto mt-10 bg-white">
         <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
           Category:
@@ -337,7 +338,7 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
 
     </aside>}
 
-{viewAll&&<aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+{viewAll&&<aside className="bg-white shadow-lg rounded-xl p-6 w-5/6 xs:w-80 m-auto">
  <div className="bg-white p-4 rounded shadow h-max overflow-y-auto">
   <h2 className="text-lg font-bold text-teal-700 mb-2">Notifications</h2>
   <ul className="space-y-2">
@@ -355,17 +356,16 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
 </div>
 </aside>}
 
-<div className="flex-1 max-w-xl px-20 sm:px-16 sm:max-w-2xl md:max-w-3xl min-[800px]:max-w-4xl min-[1000px]:max-w-5xl min-[1200px]:w-[700px] min-[1200px]:px-0 xl:w-[1000px]">
-<div className="my-6"> 
- <div className='flex gap-5 justify-between'>
+<div className="min-[1200px]:max-w-4xl xl:max-w-[1200px] mx-auto">
+ <div className='xs:flex gap-2 justify-between'>
 <p className=" font-semibold text-teal-700 m-3"> <a href="#div_id">Browse Jobs in the Area</a>.</p>
   <div onClick={fetchXview} >
-<p className="block text-lg hover:bg-teal-800 hover:text-white font-semibold mb-2 text-black opacity-80 cursor-pointer shadow-xl p-4 rounded underline"> View as Client</p>
+<p className="block text-lg hover:bg-teal-800 hover:text-white font-semibold mb-2 text-black opacity-80 cursor-pointer shadow-xl p-4 rounded underline w-max"> View as Client</p>
 </div> 
 </div>
+ 
 
-
-<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div className="relative shadow-md sm:rounded-lg z xl:w-[900px] 2xl:w-[1000px]">
 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-teal-700 dark:text-gray-200">
               <tr className="text-left text-sm">
@@ -424,17 +424,19 @@ className="p-3 my-0.5 block bg-red-500 text-white rounded hover:bg-red-600 disab
 ))}
 </tbody></table>
 </div>
-</div></div>
+
+</div>
 </div>
 
 </div> 
-<div className="relative overflow-x-auto rounded-xl shadow-md m-8 max-w-md m-auto sm:max-w-lg md:max-w-2xl lg:max-w-full px-11">  
+
+<div className="relative overflow-x-auto rounded-xl shadow-md my-8 max-w-md m-auto sm:max-w-xl md:max-w-3xl lg:max-w-full">  
 <div id="div_id"className="text-xl font-semibold text-teal-700 p-4 dark:text-gray-300"><h2>Browse More Jobs</h2></div>
  
-<div className="mx-4 flex gap-4">
+<div className="mx-2 xs:flex gap-3">
 <input
 placeholder="Search"
-className="p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
+className="p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700 my-1"
 value={search}
 onChange={(e) => {
 setPage(1); 
@@ -447,7 +449,7 @@ onChange={(e) => {
 setPage(1); 
 setLocationFilter(e.target.value);
 }}
-className="p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
+className="p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700 my-1"
 >
 <option value="">All Jobs</option>
 <option value={userLocation}>Location</option> 

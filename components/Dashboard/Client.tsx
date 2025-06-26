@@ -156,8 +156,7 @@ const fetchXview=async()=>{
  const [viewAll, setViewAll]=useState(false)
  
   return (  
-    <>  
-
+    <> 
 <div className="flex flex-wrap gap-4 justify-center">
   <div className="bg-orange-100 text-orange-700 px-4 py-6 rounded-xl w-[400px] min-[700px]:w-[300px] md:w-[350px] min-[900px]:w-[400px] h-24 min-[900px]:h-auto">
     <h3 className="text-sm font-semibold">Total Spent</h3>
@@ -177,15 +176,15 @@ const fetchXview=async()=>{
   </div>
 </div>
  
- <div className="flex justify-end items-right my-6 mx-24">
+ <div className="flex justify-end items-right my-6">
         <Link
-          href="/dashboard/create"
+          href="/dashboard/create/"
           className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-xl shadow-sm transition"
         >
           + Post New Errand
         </Link>      
 </div>
-<div className='max-w-xl xxs:px-16 px-32 sm:max-w-2xl md:max-w-3xl min-[800px]:max-w-4xl min-[1000px]:max-w-5xl min-[1200px]:max-w-6xl min-[1200px]:px-0 2xl:max-w-full'> 
+<div className='max-w-xl sm:max-w-2xl md:max-w-3xl min-[800px]:max-w-4xl min-[1000px]:max-w-5xl min-[1200px]:max-w-6xl min-[1200px]:px-0 xl:max-w-[1400px] mx-auto'> 
 
  <div>
   <h2 className="text-xl font-bold mb-4 text-teal-800 dark:text-gray-300">Your Reviews</h2>
@@ -211,10 +210,10 @@ const fetchXview=async()=>{
   </div> 
 </div>
 
- <div className="flex flex-col min-[1200px]:flex-row gap-2 bg-teal-50 p-4">
+ <div className="flex flex-col min-[1200px]:flex-row gap-2 bg-teal-50 p-4 overflow-x-auto">
     {/* Sidebar Filters */}
  { !viewAll&&
-  <aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+  <aside className="bg-white shadow-lg rounded-xl p-6 w-5/6 xs:w-80 m-auto">
       <h2 className="text-xl font-bold text-teal-700 mb-4">Filters</h2>
 
       {/* Category Filter */}
@@ -329,7 +328,7 @@ const fetchXview=async()=>{
 </div>}
 
     </aside>}
-{viewAll&&<aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+{viewAll&&<aside className="bbg-white shadow-lg rounded-xl p-6 w-5/6 xs:w-80 m-auto">
  <div className="bg-white p-4 rounded shadow h-max overflow-y-auto">
   <h2 className="text-lg font-bold text-teal-700 mb-2">Notifications</h2>
   <ul className="space-y-2">
@@ -346,11 +345,12 @@ const fetchXview=async()=>{
   <p className='p-3 text-gray-700 hover:text-gray-300 cursor-pointer' onClick={()=> setViewAll(false)}>Restore View</p> 
 </div>
 </aside>}
-    {/* Main Content */}
-    <div className="flex-1 min-[1200px]:max-w-3xl 2xl:max-w-[1200px]">  
+    {/* Main Content */} 
+
+    <div className="min-[1200px]:max-w-3xl 2xl:max-w-[1200px]">  
 <div className="my-6">
   <div className="xs:flex justify-between"> 
-    <div className="flex gap-2">
+    <div className="flex gap-2 justify-between">
   <h2 className="text-lg font-semibold text-teal-700 mb-4">Providers in the Area</h2>
   {openSuggestions&&<p className="text-gray-500 cursor-pointer" onClick={()=> setOpenSuggestions(false)}><FontAwesomeIcon icon={faAngleUp}/></p> }
     {!openSuggestions&&<p className="text-gray-500 cursor-pointer"onClick={()=> setOpenSuggestions(true)}><FontAwesomeIcon icon={faAngleDown}/></p> }</div> 
@@ -411,11 +411,11 @@ const fetchXview=async()=>{
 
 </div>  
  
-<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-     <div className="mb-4 flex gap-4">
+<div className="relative overflow-x-auto shadow-md sm:rounded-lg xl:w-[900px] 2xl:w-[1000px]">
+     <div className="mb-4 xs:flex gap-4">
         <input
           placeholder="Search"
-          className="p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
+          className="p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700 my-1"
           value={search}
           onChange={(e) => {
             setPage(1); 
@@ -428,12 +428,13 @@ const fetchXview=async()=>{
             setPage(1); 
             setLocationFilter(e.target.value);
           }}
-          className="p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
+          className="p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700 my-1"
         >
           <option value="">All Jobs</option>
           <option value={user.address}>Location</option> 
         </select>
       </div>
+
     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">      
        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
               <tr className="text-left text-sm">
@@ -522,9 +523,8 @@ const fetchXview=async()=>{
           Next
         </button>
       </div>
-</div>
-   
-  <div className="relative overflow-x-auto rounded-xl shadow-md my-8">        
+</div>   
+  <div className="relative rounded-xl shadow-md my-8">        
  <div className="my-4"><h2 className="text-lg font-semibold text-teal-700 mb-4 p-4">Jobs that Received Interests</h2></div>
      <table className="w-full text-left rtl:text-right text-gray-500 dark:text-gray-300">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-300">

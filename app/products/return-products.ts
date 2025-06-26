@@ -11,7 +11,7 @@ return listedE??[]
 }
 export const returnProduct=async(params:string)=>{
   const supabase=await createClient() 
-
+//['open','accepted', 'pending' ,'in progress', 'completed']
    const { data: listedX, error } = await supabase
   .from('jobs')
   .select('*') 
@@ -74,7 +74,7 @@ export const postedBy=async( )=>{
       .from('jobs')
       .select('*', { count: 'exact' }) 
       .eq('user_id',user?.id)
-      .in('status', ['accepted', 'pending' ,'in progress', 'completed']) 
+      .in('status', ['open','accepted', 'pending' ,'in progress', 'completed']) 
       .order(sortField, { ascending: sortDir === 'asc' })
       .range((page - 1) * pageSize, page * pageSize - 1);
  {/* .from('invitations')
@@ -108,7 +108,7 @@ export const providersBrowseAll = async (sortField:string, sortDir:string, page:
     let query = supabase
       .from('jobs')
       .select('*', { count: 'exact' })
-       .eq('status', 'open')
+       .in('status',['open','accepted', 'pending' ,'in progress', 'completed'])
        .neq('user_id',user?.id)
       .order(sortField, { ascending: sortDir === 'asc' })
       .range((page - 1) * pageSize, page * pageSize - 1);
