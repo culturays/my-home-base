@@ -398,7 +398,7 @@ className="rounded"
 </td><td className="p-3 h-24 cursor-pointer">
 {p.providerJobs.location}  
 </td><td className="p-3 h-24">
-<Link href={`/create-payments/job/${p.providerJobs.slug}`} className="text-teal-600 underline">View</Link>
+<Link href={`/create-payments/job/${p.providerJobs.id}`} className="text-teal-600 underline">View</Link>
 </td><td className="p-3 h-24">
 {p.providerJobs.status}  
 </td><td className="p-3 h-24">
@@ -493,7 +493,7 @@ className="rounded h-20 w-28"
 </td><td className="p-3 h-24 cursor-pointer hover:text-red-800 hover:font-bold" title="Search for Similar Jobs">
 {p.location}  
 </td><td className="p-3">
-<Link href={`/create-payments/job/${p.slug}`} className="text-teal-600 underline">View</Link>
+<Link href={`/create-payments/job/${p.id}`} className="text-teal-600 underline">View</Link>
 </td><td className="p-3 h-24">
 {p.amount} 
 </td><td className="p-3 h-24 text-right"> 
