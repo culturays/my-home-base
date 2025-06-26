@@ -1,5 +1,5 @@
 "use client" 
-import { handleAccept } from "@/app/job/actions";
+ 
 import { ErrandProps } from "@/app/types";
 import { useEffect, useState } from "react";
   
@@ -27,17 +27,15 @@ const ErrandList = ({initialErrands}:{initialErrands:ErrandProps[]}) => {
       const [errands, setErrands] = useState<ErrandProps[]>(initialErrands); 
 
   const getStatusAccept = async(id:number|string) => {
-     await handleAccept(id)
-        setErrands((prev ) =>
-      prev.map((e) => (e.id === id ? { ...e, status: "accepted" } : e))
-    );
-   //alert(`You accepted errand #${id}`);
-     // alert("Errand accepted!");//
-    // TODO: Send accept request to backend
+    //  await handleAccept(id)
+    //     setErrands((prev ) =>
+    //   prev.map((e) => (e.id === id ? { ...e, status: "accepted" } : e))
+    // );
+ 
   };
   return (
     <div>
-         <div className="max-w-4xl mx-auto p-4">
+         {/* <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Available Errands</h1>
 
       {selected ? (
@@ -116,7 +114,7 @@ const ErrandList = ({initialErrands}:{initialErrands:ErrandProps[]}) => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   )
 }
