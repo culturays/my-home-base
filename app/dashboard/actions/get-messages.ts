@@ -10,15 +10,15 @@ export async function getMessages(userA: string|number, userB: string|number, re
     .or(`and(sender_id.eq.${userA},receiver_id.eq.${userB}),and(sender_id.eq.${userB},receiver_id.eq.${userA})`)
     .order("created_at", { ascending: true });
  
-  const { data:recentChats, error:recentErrors } = await supabase
-    .from("profiles")
-    .select("*")
-    .in('id', (receiversId??[])) 
-  return { data, error, recentChats} ;
+  // const { data:recentChats, error:recentErrors } = await supabase
+  //   .from("profiles")
+  //   .select("*")
+  //   .in('id', (receiversId??[])) 
+  return { data, error} ;
 }
 
 
-export const getNotifed=async(clientId:string|number)=>{
+export const NotifyClient=async(clientId:string|number)=>{
 const supabase =await createClient();
 
 const { data: notifications } = await supabase
@@ -31,3 +31,14 @@ const { data: notifications } = await supabase
 }
 
  
+export const NotifyProvider=async(recId:string|number)=>{
+const supabase =await createClient();
+
+const { data: notifications } = await supabase
+  .from('notifications')
+  .select('*')
+  .eq('receiver_id',recId)
+  .order('created_at', { ascending: false }) 
+
+  return notifications??[]
+}

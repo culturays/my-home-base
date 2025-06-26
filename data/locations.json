@@ -1,5 +1,5 @@
 [
-  { "state": "Find a Place", "capital": "Start" },
+  { "state": "", "capital": "Choose" },
   { "state": "Abia", "capital": "Umuahia" },
   { "state": "Adamawa", "capital": "Yola" },
   { "state": "Akwa Ibom", "capital": "Uyo" },

@@ -64,7 +64,7 @@ const Privacy = () => {
 
       <h2 className="text-2xl font-semibold text-orange-500 mt-8 mb-2">8. Contact Us</h2>
       <p className="mb-4">
-        If you have questions, contact us at: <span className="text-teal-700 font-medium">support@yourmarketplace.com</span>
+        If you have questions, contact us at: <span className="text-teal-700 font-medium">info@gowork.africareinvented.com</span>
       </p>
 
       <p className="text-sm text-gray-500 mt-6">Effective Date: June 20, 2025</p>

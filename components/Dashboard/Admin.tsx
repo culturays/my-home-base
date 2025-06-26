@@ -9,7 +9,7 @@ import { type User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react"; 
-
+ 
 const Admin = ({ user, members, invitesX }:{ user:User, members:MembersProps[], invitesX:ProfileProps[] }) => { 
   const router = useRouter();  
   const [filter, setFilter] = useState('');   
@@ -35,14 +35,14 @@ router.refresh()
   return (
  
     <div className="">
-   <h1 className="text-2xl font-bold mb-6 text-teal-700">Admin Dashboard: Member Management</h1> 
+   <h1 className="text-2xl font-bold mb-6 text-teal-700 dark:text-white">Admin Dashboard: Member Management</h1> 
  <form className="mb-6 flex items-center gap-4" action={invsAxn}>
         <input
           type="email" 
           name="email"
           placeholder="Invite new admin email"
           id="invite-email"
-          className="border p-2 rounded mr-2 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition text-lg"
+          className="border p-2 rounded mr-2 border border-teal-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg"
         />
         <button
          type='submit'
@@ -57,17 +57,17 @@ router.refresh()
           placeholder="Filter by email or role"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border p-2 rounded mr-2 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition text-lg"
+          className="border p-2 rounded mr-2 border border-teal-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg"
         />
       </div>
 
       {/* Admin Invites Section */}
-      <h2 className="text-lg font-semibold text-gray-700 mb-2">
+      <h2 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         Pending Admin Invites
       </h2>
-      <table className="min-w-full mb-8 bg-white border">
+      <table className="min-w-[600px] mb-8 bg-white dark:bg-gray-800 border">
         <thead>
-          <tr className="bg-purple-100">
+          <tr className="bg-purple-100 dark:bg-gray-400">
             <th className="py-2 px-4 border">Email</th>
             <th className="py-2 px-4 border">Actions</th>
           </tr>
@@ -75,8 +75,8 @@ router.refresh()
         <tbody>
           {invitesX.map((invite, i) => (
             <tr key={invite.email + ' ' + 2*i} className="text-sm">
-              <td className="py-2 px-4 border">{invite.email}</td>
-              <td className="py-2 px-4 border">
+              <td className="py-2 px-4 border text-center">{invite.email}</td>
+              <td className="py-2 px-4 border text-center">
                 <button
                   onClick={() => deleteAxn(invite.email)}
                   className="bg-red-500 text-white px-2 py-1 rounded"
@@ -91,9 +91,9 @@ router.refresh()
   
       {/* Members Table */}
   
-   <table className="min-w-full bg-white border">
+   <table className="min-w-full bg-white dark:bg-gray-800 border">
         <thead>
-          <tr className="bg-teal-100"> 
+          <tr className="bg-teal-600"> 
             <th className="py-2 px-4 border">...</th>
             <th className="py-2 px-4 border">Full Name</th>
             <th className="py-2 px-4 border">Email</th>

@@ -8,6 +8,7 @@ import { Select } from "../ui/input";
 import { handleEdit } from "@/app/dashboard/actions/edit-job";
 import { ErrandProps } from "@/app/types";
 import Image from "next/image";
+import locations from '@/data/locations.json';
  function toDatetimeLocal(date: Date) {
   const pad = (n: number) => n.toString().padStart(2, '0');
 
@@ -36,7 +37,8 @@ async function handleFormAction(prevState: any, formData: FormData) {
     deadline:'',
    errandType:'',
    description:'',
-   amount:''
+   amount:'',
+    state:'',
    });
 
   // Load saved value on mount
@@ -56,40 +58,51 @@ async function handleFormAction(prevState: any, formData: FormData) {
     setFormValue((prevData) => ({
       ...prevData,
       [name]: value
-    }));
-     
+    })); 
   
   };
  
   return (
 <div>
 <h2 className="text-3xl text-gray-200 rounded font-bold bg-black p-6 w-max">{id?'Edit Request':'Create Request'}</h2>
-<form action={formAction} className="p-4 space-y-4">
+<form action={formAction} className="p-4 space-y-4 dark:border">
 
 <div className="text-lg py-2"> 
 <label>Title</label>
-<input name="title" placeholder="Braid Hair, Fetch Water, Usher, Wash Car" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2" 
+<input name="title" placeholder="Braid Hair, Fetch Water, Usher, Wash Car" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700" 
 value={inputValue.title||jobEdit?.title||''}
 onChange={handleChange}/>
 </div>
 <div className="text-lg py-2">
 <label htmlFor="message">Contact</label>
-<input name="contact" placeholder="Contact" type='number' className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2"
+<input name="contact" placeholder="Contact" type='number' className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700"
 value={inputValue.contact||jobEdit?.contact||''}
 onChange={handleChange}
 />
 </div>
 
-<div className="text-lg py-2">
+<div className="text-lg py-2 flex gap-2 justify-center">
+  <div className="max-w-xs"> 
 <label htmlFor="location">Errand Location</label>
-<input name="location" placeholder="Location" type='text' className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2"
+<input name="location" placeholder="Location" type='text' className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700 w-72 block"
 value={inputValue.location||jobEdit?.location||''}
-onChange={handleChange} />
+onChange={handleChange} /></div>
+<div className="max-w-xs "> 
+<label htmlFor="location">State</label>
+ <select className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700 w-72 block"
+           value={inputValue.state||''}
+           name='state'
+            onChange={handleChange} > 
+            {locations.map(loc => (
+            <option key={loc.state} value={loc.state}>{loc.capital}</option>
+            ))} 
+  </select>
+  </div>
 </div>
 
 <div className="text-lg py-2">
 <label htmlFor="errand_type">Errand Type</label>     
-<Select className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition" name="errandType"  
+<Select className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition dark:bg-gray-50 dark:text-gray-700" name="errandType"  
 value={inputValue.errandType||jobEdit?.errandType||''}             
 onChange={handleChange}
 >
@@ -101,7 +114,7 @@ onChange={handleChange}
 <option className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">Work Place - Airbnb, Store, Sort Goods at Warehouse </option>
 <option className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition">Others</option>
 </Select>  </div>
-<div className="sm:flex justify-center gap-1 w-max">
+<div className="sm:flex justify-center gap-1">
 <div className="text-lg py-2 ">
 <label htmlFor="date" className="block mb-1 ">
 Date
@@ -133,7 +146,7 @@ onChange={handleChange}
 
 <div className="text-lg py-2">
 <label className="text-lg py-2 " htmlFor="message">Message</label>
-<textarea name="description" placeholder="Describe your chore. Is transportation including and what shold be expected in the location? Are there dogs are certain dress codes required?" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" rows={4}
+<textarea name="description" placeholder="Describe your chore. Is transportation including and what shold be expected in the location? Are there dogs are certain dress codes required?" className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-50 dark:text-gray-700" rows={4}
 cols={50}
 maxLength={100}
 value={inputValue.description||jobEdit?.description||''}
@@ -142,7 +155,7 @@ onChange={handleChange}
 
 <div className="text-lg py-2" >
 <label className="text-lg py-2 " htmlFor="Price">Price</label>
-<input name="amount" placeholder="Job Price" type='text' className={message==='please enter an amount'? "input focus:outline-none ring-2 ring-red-500 border-red-500":'input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500' } value={inputValue.amount||jobEdit?.amount||''}
+<input name="amount" placeholder="Job Price" type='text' className={message==='please enter an amount'? "input focus:outline-none ring-2 ring-red-500 border-red-500":'input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-50 dark:text-gray-700' } value={inputValue.amount||jobEdit?.amount||''}
 onChange={handleChange}/> 
 </div>
 

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { type User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation"; 
  
-const userObj =async()=>{
+export const userObjX =async()=>{
     const supabase =await createClient();
     const { 
       data: { user }, 
@@ -13,15 +13,16 @@ const userObj =async()=>{
       return user as User
   }
  export const handleSubmit = async (prevState: {}, formData: FormData) => {
-  const user = await userObj();
+  const user = await userObjX();
+      const supabase=await createClient()
+
     if(!user){
    redirect('/dashboard/create?message=You need to Log in or Sign Up First') 
 }
-    const supabase=await createClient()
- 
-    const title= formData.get('title') as string
+  const title= formData.get('title') as string
     const description= formData.get('description') as string
     const location= formData.get('location') as string
+    const state= formData.get('state') as string
      const deadline=formData.get('deadline')as string
      const date=formData.get('date') as string
     const contact= formData.get('contact') as string
@@ -64,8 +65,8 @@ const deadlineX = new Date(deadline);
      email:user?.email,
 images:allFiles,
 slug:title.replace(/ /g,"-").trim().toLowerCase(),
-related:[location],
-location ,
+related:[location.concat(state)],
+location:location + ',' + state,
 contact ,
 deadline,
 category,
@@ -73,7 +74,7 @@ status,
 assigned,
 accepted_by:null,
 amount,
-date 
+date ,
     }; 
     if(!amount){ 
       return {  message:'Amount is Empty', errors: 'Empty Amount' };
@@ -97,7 +98,10 @@ date
     //     await new Promise(resolve => {
     //   setTimeout(resolve, 2000);
     // });
-
+ 
+ 
+redirect(`/dashboard/`)
  // res.status(400).send({ message: 'You are not valid for this website.' });
-return redirect('/dashboard');
+// if(client_id){return redirect(`/dashboard?client_id=${}`)}
+// if(provider_id){return redirect(`/dashboard?provider_id=${}`)}
   };

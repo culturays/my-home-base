@@ -1,19 +1,18 @@
 // app/actions/respond-invite.ts
 'use server';
 
+import { ErrandProps } from '@/app/types';
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function respondToInvite({
+export async function respondToJobs({
   invitingId,
   response,
-  jobid,
-  jobTitle, 
+  job
 }: {
   invitingId: string|number;
   response: 'accepted' | 'rejected' | 'interest' | 'completed' | 'cancelled';
- jobid: string|number
- jobTitle:string 
+ job: ErrandProps 
 }) {
  
   const supabase =await createClient();
@@ -23,19 +22,20 @@ export async function respondToInvite({
     if(response==='interest'){
    const { error: insertError } = await supabase
     .from('invitations')
-    .insert({ status: response, job_id:jobid, interest_id:user?.id, provider_id:user?.id , client_id:invitingId, user_id:user?.id}) 
+    .insert({ status: response, job_id:job.id, interest_id:user?.id, provider_id:user?.id , client_id:job.user_id, user_id:user?.id}) 
     .select()
    await supabase.from('notifications').insert([
       {
-        poster_id: invitingId,
+        poster_id: job.user_id,
         type: 'interest_recieved',
-        job_id:jobid,
-        message: `"${user?.user_metadata.full_name}" showed interest in your job ${jobTitle}.`,
+        job_id:job.id,
+        message: `"${user?.user_metadata.full_name}" showed interest in your job ${job.title}.`,
+        receiver_id: job.user_id
       },
     ]);
        await supabase.from('jobs')
-       .update([{ status: 'pending'}])
-       .eq('id', jobid);
+       .update([{ status: 'interest', interests:[user?.id]}])
+       .eq('id', job.id);
 if (insertError) {
     console.error('Error inviting provider:', insertError.message);
     return { success: false, error: insertError.message };
@@ -65,14 +65,15 @@ if (insertError) {
        const { error: jbxError } = await supabase
     .from('jobs')
     .update({ accepted_by: user?.id, assigned:true })
-    .eq('id', jobid);
+    .eq('id', job.id);
     
     await supabase.from('notifications').insert([
       {
-        poster_id: invitingId,
+        poster_id: job.user_id,
         type: 'invite_accepted',
-        job_id:jobid,
+        job_id:job.id,
         message: `Your job "${(inviteData as any)?.job?.title}" has been accepted by a ${user?.user_metadata.full_name}.`,
+        receiver_id: job.user_id,
       },
     ]);
       if (updateError) {
@@ -83,35 +84,53 @@ if (insertError) {
   if (response === 'completed') {
        const { error: jbxError } = await supabase
     .from('jobs')
-    .update({status: 'completed' })
-    .eq('id', jobid); 
+    .update({status: 'completed', interests:[] })
+    .eq('id', job.id); 
+     await supabase.from('notifications').insert([
+      {
+        poster_id: job.user_id,
+        type: 'task_completed',
+        job_id:job.id,
+        message: `Your job "${(inviteData as any)?.job?.title}" has been completed by a ${user?.user_metadata.full_name}.`,
+        receiver_id: job.user_id,
+      },
+    ]);
  } 
  if (response === 'cancelled') {
    await supabase.from('jobs')
        .update([{ status: 'open'}])
-       .eq('id', jobid);
+       .eq('id', job.id);
       const { error: updateError } = await supabase
     .from('invitations')
     .update({ status: response, updated_at:new Date() })
     .eq('id', invitingId)
     .select()
- 
+  await supabase.from('notifications').insert([
+      {
+        poster_id: job.user_id,
+        type: 'invite_accepted',
+        job_id:job.id,
+        message: `Request for "${(inviteData as any)?.job?.title}" was cancelled`,
+        receiver_id: job.user_id,
+      },
+    ]);
   }
  if (response === 'rejected') {
     await supabase.from('jobs')
-       .update([{ status: 'open'}])
-       .eq('id', jobid);
+       .update([{ status: 'open', interests:[]}])
+       .eq('id', job.id);
     await supabase.from('notifications').insert([
       {
-        poster_id:invitingId,
+        poster_id:job.user_id,
         type: 'invite_rejected',
-        job_id:jobid,
-        message: `"${user?.user_metadata.full_name}" rejected your job ${(inviteData as any)?.job?.title}.`,
+        job_id:job.id,
+        message: `Request for "${(inviteData as any)?.job?.title}" was rejected`,
+        receiver_id: job.user_id
       },
     ]);
   }
 
-  revalidatePath('/dashboard'); 
+  revalidatePath('/dashboard/'); 
   return { success: true };
   
 }

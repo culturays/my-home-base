@@ -2,35 +2,35 @@
 // utils/suggestProviders.ts
 import { createClient } from "@/utils/supabase/server";
 
-export async function suggestXProviders(inViteTo:number) {
+export async function suggestXProviders(inViteTo:string) {
   const supabase =await createClient();
     const { data:x, error } = await supabase
     .from("jobs")
     .select("location") 
-    .eq("id", inViteTo)
+    .eq("location", inViteTo)
      
   if (error || !x) return [];
 const px = x.map((dy)=> dy.location)
  
-  const { data, error:y } = await supabase
-    .from("profiles")
-    .select("*")
+const { data, error:y } = await supabase
+    .from("roles")
+    .select("*, profileByRole:profiles(*)")
     .range(0,5)
     .eq("role", "provider")
-    .in('address', px??[])
+   
    if (y||!x ) return [];
 
-//   const suggestions = data.filter(provider => {
-//     const interests = Array.isArray(provider.location)
-//       ? provider.location
-//       : (provider.location ?? "") 
+  const suggestions = data.filter(provider => {
+    const locs = Array.isArray(provider.location)
+      ? provider.location
+      : (provider.location ?? "") 
 
-//     return jobCategoryOrTags.some(tag =>
-//       interests.includes(tag.toLowerCase())
-//     );
-//   });
+    return px.some(tag =>
+      locs.includes(tag.toLowerCase())
+    );
+  });
 
-  return data;
+  return suggestions;
 }
   export const jobsByState = async (sortField:string, sortDir:string, page:number, pageSize:number, stateFilter:string ) => {
 // filter by Date joined range
@@ -83,7 +83,7 @@ const px = x.map((dy)=> dy.location)
 // filter by Date joined range
 // filter by  Payment thresholds (e.g., clients who paid greater than $500)
     const supabase =await createClient()
-         const {
+    const {
     data: { user }
   } = await supabase.auth.getUser() 
     let query = supabase
@@ -109,14 +109,14 @@ const px = x.map((dy)=> dy.location)
     } 
     return { data , count }
   };
-export async function suggestXJobs(inTo:string) {
+export async function suggestXJobs(inx:string) {
   
   const supabase =await createClient();
     const { data , error } = await supabase
     .from("jobs")
     .select("*")
     .range(0,3)
-    .eq("location", inTo)
+    .eq("location", inx)
      
   if (error) return []; 
 

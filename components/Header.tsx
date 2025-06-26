@@ -5,7 +5,7 @@ const Header = () => {
   return (
  <header className="flex px-2 py-3 w-full">  
   <h1><Link href="/" className="text-4xl font-bold text-orange-400">
-   e-Runs 
+ GoWork
  </Link></h1> 
   <Navbar />       
  

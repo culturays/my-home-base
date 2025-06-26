@@ -3,15 +3,15 @@ import { Message } from "@/components/form-message";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";  
-import Form from "./form";
+import Form from "./form"; 
  
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams; 
- 
+
   return (
     <form className="flex-1 flex flex-col min-w-64 w-96 p-6 bg-white rounded-xl shadow-md min-w-64 mx-auto border border-gray-100" noValidate >
       <h1 className="text-2xl text-3xl font-bold text-teal-600">Sign in</h1> 
-      <p className="text-sm text-foreground">
+      <p className="text-sm text-foreground font-medium underline text-gray-700">
         Don't have an account?{" "}
         <Link className="text-foreground font-medium underline text-orange-500 underline hover:text-orange-600" href="/sign-up">
           Sign up

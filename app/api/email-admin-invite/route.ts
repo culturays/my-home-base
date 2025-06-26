@@ -21,7 +21,7 @@ export async function POST(req:NextRequest) {
       html: `
         <h2>You’ve been invited!</h2>
         <p>You’ve been invited to join as an admin.</p>
-        <p><a href="http://localhost:3000/sign-in">Click here to log in or sign up</a></p>
+        <p><a href="https://gowork.africareinvented.com/sign-in/">Click here to log in or sign up</a></p>
       `,
     });
 return NextResponse.json({ message: data}, {status:200}) 

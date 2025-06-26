@@ -64,7 +64,7 @@ if (data.name === 'password'&&!password_pattern.test(data.value.trim())) {
            pattern={email_pattern}
 required={!!errors.email||false}
 onBlur={(e) =>handleFocus(e)} 
- className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg"/>
+ className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg dark:bg-gray-300 dark:text-gray-700"/>
 {errors.email &&
 <span className="text-red-600">
 {errors.email}
@@ -83,7 +83,7 @@ onBlur={(e) =>handleFocus(e)}
             minLength={6}
             required={!!errors.password||false}
             onBlur={(e) =>handleFocus(e)} 
-             className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg"
+             className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg dark:bg-gray-300 dark:text-gray-700"
           />
  
           {errors.password &&
@@ -93,11 +93,11 @@ onBlur={(e) =>handleFocus(e)}
 }
 {errors.password&&
 <ul className=" m-4">
-<li className="list-disc p-1">At least two uppercase letters.</li>
-<li className="list-disc p-1">At least one special character from the set !@#$&*.</li>
-<li className="list-disc p-1">At least two digits.</li>
-<li className="list-disc p-1">At least three lowercase letters.</li>
-<li className="list-disc p-1">Length between 8 and 20 characters.</li>
+<li className="list-disc p-1 text-black">At least two uppercase letters.</li>
+<li className="list-disc p-1 text-black">At least one special character from the set !@#$&*.</li>
+<li className="list-disc p-1 text-black">At least two digits.</li>
+<li className="list-disc p-1 text-black">At least three lowercase letters.</li>
+<li className="list-disc p-1 text-black">Length between 8 and 20 characters.</li>
 </ul>}
     
   {!errors.email ||!errors.password?

@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { type User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
-const userObj =async()=>{
+export const userObjX =async()=>{
     const supabase =await createClient();
     const { 
       data: { user }, 
@@ -13,7 +13,7 @@ const userObj =async()=>{
   } 
  
  export const handleEdit = async (prevState: {}, formData: FormData, id:string) => {
-  const user = await userObj();
+  const user = await userObjX();
     if(!user){
    redirect('/dashboard/create?message=You need to Log in or Sign Up First') 
 }
@@ -22,6 +22,7 @@ const userObj =async()=>{
     const title= formData.get('title') as string
     const description= formData.get('description') as string
     const location= formData.get('location') as string
+    const state= formData.get('state') as string
      const deadline=formData.get('deadline')
      const date=formData.get('date')
     const contact= formData.get('contact') as string
@@ -58,8 +59,8 @@ user_id:user?.id,
 email:user?.email,
 images:allFiles,
 slug:title.replace(/ /g,"-").trim().toLowerCase(),
-related:[location],
-location ,
+related:[location.concat(state)],
+location:location + ',' + state,
 contact ,
 deadline,
 category,
@@ -84,5 +85,5 @@ console.error(error)
 return { errors: error.message, message:'' }; 
 }
   
-return redirect('/dashboard');
+return redirect('/dashboard/');
   };

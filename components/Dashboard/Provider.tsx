@@ -1,7 +1,7 @@
 "use client"
 import locations from '@/data/locations.json';
 import { categoriesJobs, jobsByDate, jobsByState, suggestXJobs } from "@/app/dashboard/actions/suggest"
-import { ErrandProps, ErrandStats, InviteProps, NotifyProps, ProfileProps, ReviewsProps } from "@/app/types" 
+import { ErrandProps, ErrandStats, InviteProps, NotifyProps, ProfileProps, ReviewsProps, RolesProps } from "@/app/types" 
 import { type User } from "@supabase/supabase-js"
 import Image from "next/image"
 import Link from "next/link" 
@@ -12,20 +12,17 @@ import PostReview from "./PostReview"
 import { sendMessage } from "@/app/dashboard/actions/send-messages"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons"
-import { respondToInvite } from "@/app/dashboard/actions/respond-invite" 
+import { respondToJobs } from "@/app/dashboard/actions/respond-invite" 
 import { fetchNewBatch, postedByNewBatch, providersBrowseAll } from "@/app/products/return-products"
+import { fetchProviderView } from '@/app/dashboard/actions/invite-providers';
+import { useRouter } from 'next/navigation';
 const pageSize =  3;
-const Provider = ({ products, user, jobs , clientStats, reviews, recentCli ,notices ,userLocation
-}:{ products:ErrandProps[], user:User, jobs: ErrandProps[], clientStats:ErrandStats, reviews:ReviewsProps[], recentCli:ProfileProps[], notices:NotifyProps[], userLocation:string }) => {
-const [notifications, setNotifications]=useState<NotifyProps[]>([])
-const[suggestedJobs, setSuggestedJobs]=useState<ErrandProps[]>([])
-const [interestTo,setInterestTo]= useState('')
+const Provider = ({ products, user, clientStats, reviews, recentCli ,notices ,userLocation, roles, jobs}:{ products:ErrandProps[], user:User, jobs: ErrandProps[], clientStats:ErrandStats, reviews:ReviewsProps[], recentCli:ProfileProps[], notices:NotifyProps[], userLocation:string, roles:RolesProps}) => {  
 const [messages, setMessages] = useState<any[]>([]); 
 const [messageId, setMessageId]=useState<string|number>('')
 const [open, setOpen] = useState(false);
 const [openId, setOpenId] = useState<string|number>(0);
-const [job,setJobId]= useState(0)
-const [openSuggestions, setOpenSuggestions]=useState(false)
+const [job,setJobId]= useState(0) 
 const [input, setInput] = useState(""); 
 const [totalCount, setTotalCount] = useState(0);
 const [page, setPage] = useState(1);
@@ -36,6 +33,7 @@ const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 const [isPending, startTransition] = useTransition(); 
 const [categoryFilter, setCategoryFilter] = useState('');
 const [stateFilter, setStateFilter] = useState('');
+const [viewAll, setViewAll]=useState(false)
 const [successMessage, setSuccessMessage]=useState<Record<string|number, 'idle' | 'pending' | 'success'>>({})
 const [fetchList, setFetchList] = useState<ErrandProps[]>([]);
 const removeRow = products.map((xy:ErrandProps)=> xy.providerJobs.id)
@@ -44,25 +42,25 @@ const removeRow = products.map((xy:ErrandProps)=> xy.providerJobs.id)
     setOpenId(id)
     setOpen(true)
    } 
- const getSuggestions =(lc:string )=>{
-    setOpenSuggestions(prev=> !prev)
-   setInterestTo(lc)
-  // setProviderIdx(i)
-   }  
+  
 
   const handleSend = async (id:string|number) => { 
     if (!input.trim()) return;
-    if (!job) return;
-    
-  //  const { data, error } = await sendMessage(user.id, id, input, job);   
+    if (!job) return; 
+  const { data, error } = await sendMessage(user.id, id, input, job);   
    setJobId(0)
    setInput("");
    setMessageId('') 
    
   };
-      const handleResponse = async(invitingId: string|number, response: 'accepted' | 'rejected' |'interest' | 'completed' | 'cancelled', jobid: string|number, jobTitle:string ) => {
-        const {success, error}=await respondToInvite({ invitingId, response, jobid, jobTitle });
- 
+      const handleResponse = async(invitingId: string|number, response: 'accepted' | 'rejected' |'interest' | 'completed' | 'cancelled', job: ErrandProps) => {
+        const {success, error}=await respondToJobs({ invitingId, response, job});
+        if (success) {
+    setSuccessMessage(prev => ({ ...prev, [job.user_id]: 'success' }) as Record<string|number, 'idle' | 'pending' | 'success'>);
+  } else {
+    setSuccessMessage(prev => ({ ...prev, [job.user_id]: 'idle' }) as Record<string|number, 'idle' | 'pending' | 'success'>);
+  }
+  router.refresh()
       };
   
  const chatFxn =(id:string|number, jobId:number)=>{
@@ -74,21 +72,15 @@ const removeRow = products.map((xy:ErrandProps)=> xy.providerJobs.id)
     useEffect(() => {
       
     async function loadMessages() {       
-      const { data , error, recentChats} = await getMessages(user.id, messageId, receiversId);
-        setMessages(recentChats || [])
+      const { data , error} = await getMessages(user.id, messageId, receiversId);
+        // setMessages(recentChats || [])
         if(messageId)
       setMessages(data || []);
     }
     loadMessages();
   }, [user, messageId]);
  
- useEffect(()=> {
-const getProviders=async()=>{
-const providersByLocation = await suggestXJobs(interestTo)
-setSuggestedJobs(providersByLocation)
-}
-getProviders()
- },[interestTo])  
+  
 //   useEffect(() => {
 //   const supabase = createClient();
 //   const channel = supabase
@@ -108,7 +100,6 @@ getProviders()
 //     )
 //     .subscribe();
 
-// //  clean up since not async
 //   return () => {
 //     supabase.removeChannel(channel);
 //   };
@@ -118,39 +109,44 @@ getProviders()
   const { data, count }  = await providersBrowseAll(sortField, sortDir, page, search, pageSize, locationFilter );
   setFetchList(data ??[]);
   setTotalCount(count || 0);
- 
+   router.refresh()
   }
    useEffect(() => { 
  jobOnTable()
    }, [page, search, locationFilter, sortField, sortDir ]); 
 
   const categoryTable=async()=>{
-  // const { data, count }  = await categoriesJobs(sortField, sortDir, page, search, pageSize, categoryFilter );
-  // setFetchList(data ??[]);
-  // setTotalCount(count || 0);
+ if(categoryFilter){
+     const { data, count }  = await categoriesJobs(sortField, sortDir, page, search, pageSize, categoryFilter );
+    setFetchList(data ??[]);
+  setTotalCount(count || 0);
+  }  
  
   }
    useEffect(() => { 
  categoryTable()
    }, [page, search, categoryFilter, sortField, sortDir ]);
-     const stateTable=async()=>{
-  // const { data, count } = await jobsByState(sortField, sortDir, page, pageSize, stateFilter );
-  // setFetchList(data ??[]);
-  // setTotalCount(count || 0);
+     const stateTable=async()=>{ 
+      if(stateFilter){
+    const { data, count } = await jobsByState(sortField, sortDir, page, pageSize, stateFilter );
+  setFetchList(data ??[]);
+  setTotalCount(count || 0);
+  }
+
  
   }
    useEffect(() => { 
  stateTable()
    }, [page, search, stateFilter, sortField, sortDir ]);
     const dateTable=async()=>{ 
-  //    if (sortDir === 'asc') {
-  //      setSortDir( 'desc'  )  
-  // const { data, count } = await jobsByDate(sortField, sortDir, page, pageSize );
-  // setFetchList(data ??[]);
-  // setTotalCount(count || 0);
-  //    } else { 
-  //      setSortDir('asc');
-  //    } 
+     if (sortDir === 'asc') {
+       setSortDir( 'desc'  )  
+  const { data, count } = await jobsByDate(sortField, sortDir, page, pageSize );
+  setFetchList(data ??[]);
+  setTotalCount(count || 0);
+     } else { 
+       setSortDir('asc');
+     } 
   }
  
    const totalPages = Math.ceil(totalCount / pageSize);
@@ -162,16 +158,13 @@ getProviders()
        setSortDir('asc');
      }
    };
- 
-// ------button to accept and add accepter id to db--------------
-  
-// ------------------------------------------
-// My Applications / Offers	Show pending and accepted offers.
-// Jobs In Progress	Tasks the provider is currently working on.
-// Completed Jobs History	View past completed errands.
-// Messages/Chat Talk to clients about jobs. 
- 
+
 // Update Availability	Indicate whether the provider is currently available or not.
+const router= useRouter()
+const fetchXview=async()=>{
+ await fetchProviderView(roles)
+  router.push(`/dashboard/`)
+}
  const paidStats = fetchList.filter((xy)=> xy.payment_status ==='paid').map(dy=> dy.id)
 return (
 <div>
@@ -187,7 +180,7 @@ return (
 </div> 
 <div className="bg-yellow-100 text-yellow-700 p-4 rounded-xl bg-teal-100 text-teal-700 px-4 py-6 rounded-xl w-[400px] min-[700px]:w-[300px] md:w-[350px] min-[900px]:w-[400px] h-24 min-[1268px]:h-auto">
 <Link
-href="/create-payments" 
+href="/create-payments/" 
 >
 <h3 className="text-sm font-semibold hover:text-gray-400">Payout History</h3>
 </Link> 
@@ -196,7 +189,7 @@ href="/create-payments"
 </div>
 <div className="flex justify-end items-right my-6 ">
 <Link
-href="/dashboard/create"
+href="/dashboard/create/"
 className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl shadow-sm transition"
 >
 + Post New Errand
@@ -204,12 +197,11 @@ className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl sha
 </div>
 <div>
 <div className="mt-8">
-<h2 className="text-xl font-bold mb-4 text-teal-800">Your Reviews</h2>
-<div className="space-y-4">
+<h2 className="text-xl font-bold mb-4 text-teal-800 dark:text-gray-300">Your Reviews</h2>
+<div className="space-y-4 flex">
 {reviews.map((review) => (
-<div key={review.id} className="bg-white p-4 border rounded shadow-sm">
-<p className="text-gray-700">You rated <strong>{review.providerName}</strong> for <em>{review.job_title?.length>0 &&review.job_title[0]}</em></p>
-
+<div key={review.id} className="bg-white p-4 border rounded shadow-sm max-w-96">
+<p className="text-gray-700">You were rated by <strong>{review.providerName}</strong> for <em>{review.job_title?.length>0 &&review.job_title[0]}</em></p>
 <div className="flex">  
 {[1, 2, 3, 4, 5].map((star) => (
 <p
@@ -228,26 +220,27 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
 </div> 
 
 <div className="flex flex-col min-[1200px]:flex-row gap-2 bg-teal-50 p-8">
-<aside className="bg-white shadow-lg rounded-xl p-6 w-80 xl:w-1/4 m-auto">
-<h2 className="text-xl font-bold text-teal-700 mb-4">Filters</h2>
+{ !viewAll&&
+  <aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+      <h2 className="text-xl font-bold text-teal-700 mb-4">Filters</h2>
 
-{/* Category Filter */}
-<div className="mb-6 max-w-md mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl">
-<label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
-Category:
-</label>
-
-<select
-id="category"
-className="w-full border border-teal-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-value={categoryFilter}
-onChange={(e) => {
-setPage(1); 
-setCategoryFilter(e.target.value)
-
-}} >  
-<optgroup label="All"> 
-<option value=""></option>
+      {/* Category Filter */}
+      <div className="mb-6 max-w-md mx-auto mt-10 bg-white">
+        <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
+          Category:
+        </label>
+         
+        <select
+          id="category"
+          className="w-full border border-teal-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-white" 
+         value={categoryFilter}
+          onChange={(e) => {
+            setPage(1); 
+              setCategoryFilter(e.target.value)
+              
+          }} >  
+ <optgroup label="" > 
+  <option value=""></option>
 <option value="cleaning">Cleaning</option>
 <option value="Washing Clothes">Washing clothes</option> 
 <option value="Drying and folding laundry">Drying and folding laundry</option>
@@ -255,188 +248,146 @@ setCategoryFilter(e.target.value)
 <option value="Changing bed linens">Changing bed linens</option>
 <option value="Washing curtains or rugs">Washing curtains or rugs</option>
 </optgroup>
+ 
+    <optgroup label="🏠 Household - Indoors">
+      <option value="sweeping">Sweeping/Mopping Floors</option>
+      <option value="vacuuming">Vacuuming Carpets</option>
+      <option value="dusting">Dusting Surfaces</option>
+      <option value="cleaning_bathroom">Cleaning Bathrooms</option>
+     <option value="cleaning_bathroom">Kitchen/Common Area</option>
+      <option value="organizing">Organizing Closets</option>
+      <option value="meal_prep">Meal Prep and Cooking</option>
+    </optgroup>
 
-<optgroup label="🏠 Household - Indoors">
-<option value="sweeping">Sweeping/Mopping Floors</option>
-<option value="vacuuming">Vacuuming Carpets</option>
-<option value="dusting">Dusting Surfaces</option>
-<option value="cleaning_bathroom">Cleaning Bathrooms</option>
-<option value="cleaning_bathroom">Kitchen/Common Area</option>
-<option value="organizing">Organizing Closets</option>
-<option value="meal_prep">Meal Prep and Cooking</option>
-</optgroup>
+    <optgroup label="🏠 Household - Outdoors">
+      <option value="mowing_lawn">Mowing the Lawn</option>
+      <option value="raking_leaves">Raking Leaves</option>
+      <option value="watering_garden">Watering Plants/Garden</option>
+      <option value="cleaning_gutters">Cleaning Gutters</option>
+      <option value="car_wash">Washing the Car</option>
+    </optgroup>
+ 
+    <optgroup label="🏢 Office - Indoors">
+      <option value="desk_cleaning">Cleaning Desks/Electronics</option>
+      <option value="vacuum_office">Vacuuming Office Floors</option>
+      <option value="filing">Filing Documents</option>
+      <option value="restocking_supplies">Restocking Supplies</option>
+      <option value="breakroom_cleaning">Cleaning Breakroom</option>
+      <option value="tech_admin">Tech and Admin</option>
+    </optgroup>
 
-<optgroup label="🏠 Household - Outdoors">
-<option value="mowing_lawn">Mowing the Lawn</option>
-<option value="raking_leaves">Raking Leaves</option>
-<option value="watering_garden">Watering Plants/Garden</option>
-<option value="cleaning_gutters">Cleaning Gutters</option>
-<option value="car_wash">Washing the Car</option>
-</optgroup>
+    <optgroup label="🏢 Office - Outdoors">
+      <option value="sweeping_walkways">Sweeping Walkways</option>
+      <option value="cleaning_windows">Cleaning Exterior Windows</option>
+      <option value="landscape_care">Trimming Entrance Bushes</option>
 
-<optgroup label="🏢 Office - Indoors">
-<option value="desk_cleaning">Cleaning Desks/Electronics</option>
-<option value="vacuum_office">Vacuuming Office Floors</option>
-<option value="filing">Filing Documents</option>
-<option value="restocking_supplies">Restocking Supplies</option>
-<option value="breakroom_cleaning">Cleaning Breakroom</option>
-<option value="tech_admin">Tech and Admin</option>
-</optgroup>
-
-<optgroup label="🏢 Office - Outdoors">
-<option value="sweeping_walkways">Sweeping Walkways</option>
-<option value="cleaning_windows">Cleaning Exterior Windows</option>
-<option value="landscape_care">Trimming Entrance Bushes</option>
-
-</optgroup>
-
+    </optgroup>
+ 
+  </select>
+      </div>
+ <div className="mb-6">
+        <label htmlFor="state" className="block text-sm font-semibold text-gray-700 mb-2">
+          Location/State:
+        </label>
+        <select className="w-full border border-teal-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none p-2 border rounded-md w-full text-gray-700  dark:bg-white"
+         value={stateFilter}
+          onChange={(e) => {
+            setPage(1); 
+            setStateFilter(e.target.value);
+          }}> 
+          {locations.map(loc => (
+          <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
+          ))} 
 </select>
+ 
+      </div>
+      {/* Sort Filter */}
+      <div>
+        <label htmlFor="sort" className="block text-sm font-semibold mb-2 text-gray-700">
+          Sort By:
+        </label>
+        <select 
+          className="w-full border border-teal-300 rounded px-3 py-2 text-gray-700 focus:ring-2 focus:ring-teal-400 focus:outline-none dark:bg-white" 
+           onClick={dateTable} >       
+        <option className="py-2 px-4 border cursor-pointer">Newest</option>
+        <option className="py-2 px-4 border cursor-pointer">Oldest</option>  
+        </select>
+      </div>
+
+{/* Notifications */}
+   <div className="bg-white p-4 rounded shadow h-max overflow-y-auto">
+  <h2 className="text-lg font-bold text-teal-700 mb-2">Notifications</h2>
+  <ul className="space-y-2">
+    {notices.slice(0,3).map((n) => ( 
+      <ul key={n.id}> 
+  <li className="p-3 bg-white rounded shadow text-sm text-gray-700 font-bold hover:text-gray-400">
+    <Link href={`/create-payments/job/${n.job_id}`}> {n.message} </Link> 
+      </li>
+    {!paidStats.includes(n.job_id)&& <li className="p-3 bg-white rounded shadow text-sm text-gray-700 font-bold hover:text-gray-400">
+    <Link href={`/create-payments/job/${n.job_id}`}> You have pending payments to make - {n.job_id} </Link> 
+      </li>}
+   </ul> ))}
+  </ul>
+  <p className='p-3 text-gray-700 hover:text-gray-300 cursor-pointer' onClick={()=> setViewAll(true)}>See All</p> 
 </div>
-<div className="mb-6">
-<label htmlFor="state" className="block text-sm font-semibold text-gray-700 mb-2">
-Location/State:
-</label>
-<select className="w-full border border-teal-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none p-2 border rounded-md w-full text-gray-700"
-value={stateFilter}
-onChange={(e) => {
-setPage(1); 
-setStateFilter(e.target.value);
-}}>
-
-{locations.map(loc => (
-<option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
-))}
-
-</select>
-
-</div>
-{/* Sort Filter */}
-<div>
-<label htmlFor="sort" className="block text-sm font-semibold text-gray-700 mb-2">
-Sort By:
-</label>
-
-<select 
-className="w-full border border-teal-300 rounded px-3 py-2 focus:ring-2 focus:ring-teal-400 focus:outline-none" 
-onClick={dateTable} >       
-<option className="py-2 px-4 border cursor-pointer">Newest</option>
-<option className="py-2 px-4 border cursor-pointer">Oldest</option>  
-</select>
-</div>
-<div  className="bg-white p-4 rounded shadow h-max overflow-y-auto">
-<h2 className="text-lg font-bold text-teal-700 mb-2">Notifications</h2>
-<ul className="space-y-2">
-{notices.map((n) => ( 
-<li key={n.id} className="p-3 bg-white rounded shadow text-sm text-gray-700 font-bold hover:text-gray-400">
-<Link href={`/create-payments/job/${n.job_id}`}> { n.message }</Link> 
-</li>
-))}
-</ul>
-</div>
-
-{messages.length>0 &&<div> 
-<ChatBox userId={user.id} messages={messages} recipientId={messageId} onMessageId={setMessageId} />  
+ 
+   {messages.length>0 &&<div> 
+   <ChatBox userId={user.id} messages={messages} recipientId={messageId} onMessageId={setMessageId} />  
 </div>}
-</aside>
+
+    </aside>}
+
+{viewAll&&<aside className="bg-white shadow-lg rounded-xl p-6 w-80 2xl:w-1/4 m-auto">
+ <div className="bg-white p-4 rounded shadow h-max overflow-y-auto">
+  <h2 className="text-lg font-bold text-teal-700 mb-2">Notifications</h2>
+  <ul className="space-y-2">
+    {notices.map((n) => ( 
+      <ul key={n.id}> 
+  <li className="p-3 bg-white rounded shadow text-sm text-gray-700 font-bold hover:text-gray-400">
+    <Link href={`/create-payments/job/${n.job_id}`}> {n.message} </Link> 
+      </li>
+    {!paidStats.includes(n.job_id)&& <li className="p-3 bg-white rounded shadow text-sm text-gray-700 font-bold hover:text-gray-400">
+    <Link href={`/create-payments/job/${n.job_id}`}> You have pending payments to make - {n.job_id} </Link> 
+      </li>}
+   </ul> ))}
+  </ul>
+  <p className='p-3 text-gray-700 hover:text-gray-300 cursor-pointer' onClick={()=> setViewAll(false)}>Restore View</p> 
+</div>
+</aside>}
 
 <div className="flex-1 max-w-xl px-20 sm:px-16 sm:max-w-2xl md:max-w-3xl min-[800px]:max-w-4xl min-[1000px]:max-w-5xl min-[1200px]:w-[700px] min-[1200px]:px-0 xl:w-[1000px]">
-<div className="my-6">
-<h2 className="text-lg font-semibold text-teal-700 mb-4">Suggested Jobs</h2>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-{suggestedJobs.length > 0 ? (
-suggestedJobs.map(job => (
-<div
-key={job.id}
-className="bg-white w-max border border-gray-200 rounded-xl p-4 shadow-sm"
->
-<h3 className="text-lg font-bold text-gray-800 my-2">{job.title}</h3>
-<p className="text-sm text-gray-500">{job.description}</p>
-<div className="w-max"> {job?.images.length>0&&  <Image
-src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${job?.images[0]}`}
-width={40}
-height={40}
-alt={job.title}
-className="w-40 h-20 object-cover rounded-t-lg"
-/>  }
-{job?.images.length<1&&  <Image
-src='/popcorn.png'
-width={40}
-height={40}
-alt={job.title}
-className="w-40 h-20 object-cover rounded-t-lg"
-/>  }
-</div>
-<p className="font-bold text-gray-600 mt-1">
-is at {job.location || "N/A"}
-</p> 
-
-<button
-disabled={successMessage[job.id]  === 'pending' || successMessage[job.id] === 'success'}
-onClick={() => handleResponse('', 'interest' , job?.id, job.title )}
-
-className="mt-3 w-40 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 disabled:opacity-50"
->
-{
-successMessage[job.id] === 'pending'
-? 'Inviting...'
-: successMessage[job.id] === 'success'
-? 'Invited'
-: 'Send Interest'
-}
-
-</button>
+<div className="my-6"> 
+ <div className='flex gap-5 justify-between'>
+<p className=" font-semibold text-teal-700 m-3"> <a href="#div_id">Browse Jobs in the Area</a>.</p>
+  <div onClick={fetchXview} >
+<p className="block text-lg hover:bg-teal-800 hover:text-white font-semibold mb-2 text-black opacity-80 cursor-pointer shadow-xl p-4 rounded underline"> View as Client</p>
+</div> 
 </div>
 
-))
-) : (
-<p className="text-sm text-gray-500">No Jobs in the Area. <a href="#div_id">Browse</a>.</p>
-)}
-</div>
+
 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-<div className="mb-4 flex gap-4">
-<input
-placeholder="Search"
-className="border p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-value={search}
-onChange={(e) => {
-setPage(1); 
-setSearch(e.target.value);
-}}
-/>
-<select
-value={locationFilter}
-onChange={(e) => {
-setPage(1); 
-setLocationFilter(e.target.value);
-}}
-className="border p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
->
-<option value="">All Jobs</option>
-<option value={userLocation}>Location</option> 
-</select>
-</div>
 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-teal-700 dark:text-gray-200">
               <tr className="text-left text-sm">
-             <th scope="col"className="px-6 py-3 border cursor-pointer">Title </th>
-                <th scope="col"className="px-6 py-3 border cursor-pointer">Description </th>
-                <th scope="col"className="px-6 py-3 border cursor-pointer">Photo </th> 
-                <th scope="col"className="px-6 py-3 border cursor-pointer">At </th>
-                <th scope="col"className="px-6 py-3 border cursor-pointer">Options </th>
-                <th scope="col"className="px-6 py-3 border cursor-pointer">Status </th> 
-                <th scope="col"className="px-6 py-3 border cursor-pointer">Cost </th><th scope="col"className="px-6 py-3 border cursor-pointer">Action </th>
+             <th scope="col"className="px-6 py-3 cursor-pointer">Title </th>
+                <th scope="col"className="px-6 py-3 cursor-pointer">Description </th>
+                <th scope="col"className="px-6 py-3 cursor-pointer">Photo </th> 
+                <th scope="col"className="px-6 py-3 cursor-pointer">At</th>
+                <th scope="col"className="px-6 py-3 cursor-pointer">Options </th>
+                <th scope="col"className="px-6 py-3 cursor-pointer">Status </th> 
+                <th scope="col"className="px-6 py-3 cursor-pointer">$Cost</th><th scope="col"className="px-6 py-3 cursor-pointer">Action </th>
           </tr>  
-        </thead> 
+   </thead> 
 
-  <tbody>
+ <tbody>
 {products.map((p: any) => (
-<tr key={p.providerJobs.id} className="border-t hover:bg-teal-200"><td className="p-3">{p.providerJobs.title}</td><td className="p-3">{p.providerJobs.description}</td><td className="p-3">
+<tr key={p.providerJobs.id} className="odd:bg-teal-100 odd:dark:bg-orange-100 even:bg-gray-50 even:dark:bg-gray-100 border-b dark:border-gray-700 border-gray-200 text-gray-900"><td className="p-3 h-24">{p.providerJobs.title}</td><td className="p-3 h-24">{p.providerJobs.description}</td><td className="p-3 h-24">
 {p?.providerJobs.images?.length>0&& <Image
 src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${p?.providerJobs.images[0]}`}
 width={80}
 height={80}
 alt={p.providerJobs.title}
-className="rounded"
+className="rounded h-20 w-28"
 /> }
 {p?.providerJobs.images?.length===0&& <Image
 src={'/popcorn.png'}
@@ -444,34 +395,32 @@ width={80}
 height={80}
 alt={p.providerJobs.title}
 className="rounded"
-/> }
-</td><td className="p-3 cursor-pointer" title="Search for Providers" onClick={()=>getSuggestions(p.providerJobs.id)}>
+/>}
+</td><td className="p-3 h-24 cursor-pointer">
 {p.providerJobs.location}  
-</td><td className="p-3">
+</td><td className="p-3 h-24">
 <Link href={`/create-payments/job/${p.providerJobs.slug}`} className="text-teal-600 underline">View</Link>
-</td><td className="p-3">
+</td><td className="p-3 h-24">
 {p.providerJobs.status}  
-</td><td className="p-3">
+</td><td className="p-3 h-24">
 {p.providerJobs.amount} 
-</td><td className="p-3 text-right space-x-3">  
+</td><td className="p-3 h-24 text-right">  
 { p.provider_id===p.providerJobs.accepted_by&&<button
-onClick={() => handleResponse(p.id, 'completed', p.providerJobs.id, p.providerJobs.title)}
+onClick={() => handleResponse(p.id, 'completed', p.providerJobs)}
 disabled={isPending}
-className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
->Inprogress</button>}
-{p.status !=='interest'&& p.provider_id!==p.providerJobs.accepted_by&&<button
-onClick={() => handleResponse(p.id, 'accepted', p.providerJobs.id, p.providerJobs.title)}
-disabled={isPending}
-className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
+className="p-3 my-0.5 block bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
+>Inprogress</button>}{p.providerJobs.status==='in progress' && p.provider_id!==p.providerJobs.accepted_by&&<button
+onClick={() => handleResponse(p.id, 'accepted', p.providerJobs)}
+disabled={isPending||p.providerJobs.payment_status !=='paid'}
+className="p-3 my-0.5 block bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"title='Waiting for Payment'
 >Accept</button>}
-{p.status ==='accepted'&&<button
-onClick={() => handleResponse(p.id, 'rejected', p.providerJobs.id, p.providerJobs.title)}
+{p.status ==='accepted' && <button
+onClick={() => handleResponse(p.id, 'rejected', p.providerJobs)}
 disabled={isPending}
-className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+className="p-3 my-0.5 block bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
 >Reject</button>}
-{p.status ==='interest'&&<button className="text-red-500 hover:underline my-2"onClick={() => handleResponse(p.id, 'cancelled', p.providerJobs.id, p.providerJobs.title)}>Remove</button>}</td>{p.providerJobs.assigned&&<td><button onClick={()=> chatFxn(p.providerJobs.accepted_by, p.providerJobs.id)}className="text-teal-600 p-3 rounded-full shadow-lg mx-4">
-💬</button></td>}
-</tr>
+{(!p.providerJobs.assigned||p.status === 'interest' )&&<button className="text-red-500 hover:underline my-2 my-0.5 block"onClick={() => handleResponse(p.id, 'cancelled', p.providerJobs)}>Remove</button>} </td><td><button disabled={!p.providerJobs.assigned} onClick={()=> chatFxn(p.providerJobs.accepted_by, p.providerJobs.id)}className="text-teal-600 block p-3 rounded-full shadow-lg mx-4">
+💬</button></td></tr>
 ))}
 </tbody></table>
 </div>
@@ -479,13 +428,13 @@ className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opa
 </div>
 
 </div> 
-
 <div className="relative overflow-x-auto rounded-xl shadow-md m-8 max-w-md m-auto sm:max-w-lg md:max-w-2xl lg:max-w-full px-11">  
-<div id="div_id"className="text-lg font-semibold text-teal-700 mb-4 p-4"><h2>Browse More Jobs</h2></div>
-<div className="m-4 flex gap-4">
+<div id="div_id"className="text-xl font-semibold text-teal-700 p-4 dark:text-gray-300"><h2>Browse More Jobs</h2></div>
+ 
+<div className="mx-4 flex gap-4">
 <input
 placeholder="Search"
-className="border p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+className="p-2 rounded w-64 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
 value={search}
 onChange={(e) => {
 setPage(1); 
@@ -498,21 +447,22 @@ onChange={(e) => {
 setPage(1); 
 setLocationFilter(e.target.value);
 }}
-className="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+className="p-2 rounded focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-200 dark:text-gray-700"
 >
 <option value="">All Jobs</option>
 <option value={userLocation}>Location</option> 
 </select>
+ 
 </div>
 
-<table className="w-full text-left mx-4">
- <thead className="bg-teal-600 text-white">
+<table className="w-full text-left rtl:text-right text-gray-500 dark:text-gray-300 my-4">
+ <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
 <tr className="">{['Title', 'Description', 'Photo', 'At', 'Options',  'Cost', 'Action'].map((label, i) => {
 const keys = ['title', 'description', 'photo', 'at', 'options',  'cost', 'action'];
 return (
 <th
 key={i}
-className="py-2 px-4 border cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap  text-white"
+className="py-2 px-4 border cursor-pointer px-6 py-4 font-medium"
 onClick={() => toggleSort(keys[i])}
 >
 {label} {sortField === keys[i] ? (sortDir === 'asc' ? '▲' : '▼') : ''}
@@ -524,8 +474,8 @@ onClick={() => toggleSort(keys[i])}
 
 <tbody>
 {fetchList.filter((xy)=> !removeRow.includes(xy.id)).map((p: any) => (
-<tr key={p.id} className="border-t hover:bg-teal-200"><td className="p-3">{p.title}</td>
-<td className="p-3">{p.description}</td><td className="p-3">{p.images?.length>0&& <Image
+<tr key={p.id} className="border-b dark:border-gray-700 border-gray-200"><td className="p-3 h-24 font-medium">{p.title}</td>
+<td className="p-3 h-24">{p.description}</td><td className="p-3 h-24">{p.images?.length>0&& <Image
 src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${p?.images[0]}`}
 width={80}
 height={80}
@@ -537,19 +487,18 @@ src={'/popcorn.png'}
 width={80}
 height={80}
 alt={p.title}
-className="rounded"
+className="rounded h-20 w-28"
 /> } 
-</td><td className="p-3 cursor-pointer hover:text-red-800 hover:font-bold" title="Search for Similar Jobs" onClick={()=>getSuggestions(p.id)}>
+</td><td className="p-3 h-24 cursor-pointer hover:text-red-800 hover:font-bold" title="Search for Similar Jobs">
 {p.location}  
 </td><td className="p-3">
 <Link href={`/create-payments/job/${p.slug}`} className="text-teal-600 underline">View</Link>
-</td><td className="p-3">
+</td><td className="p-3 h-24">
 {p.amount} 
-</td><td className="p-3 text-right space-x-3"> 
+</td><td className="p-3 h-24 text-right"> 
 <div className="flex gap-2">
 <button
-//(p.id, 'rejected', p.providerJobs.id, p.providerJobs.title )
-onClick={() => handleResponse(p.user_id, 'interest', p.id, p.title )}
+onClick={() => handleResponse('', 'interest', p )}
 className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
 >
 Send Interest
@@ -584,7 +533,7 @@ Next
 
 <div className="flex"> 
 {recentCli.map((dy)=>
-<div className="bg-white rounded-lg shadow m-8 w-56"key={dy.id} >
+<div className="bg-white dark:bg-gray-700 rounded-lg shadow m-8 w-56"key={dy.id} >
 {dy?.user_img&& <Image
 src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/profileimgs/${dy?.user_img}`}
 width={80}
@@ -599,29 +548,27 @@ height={80}
 alt={dy.full_name}
 className="w-56 h-36 object-cover rounded-t-lg"
 /> }
-<div className="p-2 w-56">
-<h3 className="text-2xl font-bold mb-2">{dy.full_name} </h3>
-<Link href={`/profile/${dy.id}`}><button className="mt-4 bg-blue-500 text-white px-3 py-2 rounded-full hover:bg-blue-700">
-View
-</button></Link> 
-</div> 
-
-<div className="p-2">
+<h3 className="text-2xl font-bold mb-2 p-2 w-56">{dy.full_name} </h3>
+<div className="flex px-1 py-4 justify-between">
 <button
 onClick={()=>openFxn(dy.id)}
-className="bg-teal-600 text-white px-4 py-2 rounded"
+className="bg-teal-600 text-white p-2 rounded hover:opacity-70"
 >
 Write a Review
 </button>
+<Link href={`/profile/${dy.id}`}><button className="py-2 text-white rounded hover:opacity-70 px-4 bg-orange-500">
+View
+</button></Link> 
 {openId===dy.id&&
 <PostReview role="provider" identity={openId} isOpen={open} onClose={() => setOpen(false)} full_name={dy.full_name} />  }
-</div>
+</div> 
+ 
 
 {messageId=== dy.id&&job && 
 <div className="p-6 fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
 <div className="relative bg-white p-4 rounded shadow overflow-y-auto w-72">      
 <h2 className="text-lg font-bold text-teal-700 mb-2">Messages</h2>
-
+ 
 <input
 value={input}
 onChange={(e) => setInput(e.target.value)}

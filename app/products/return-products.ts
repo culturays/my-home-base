@@ -1,5 +1,6 @@
   "use server"
 import { createClient } from "@/utils/supabase/server" 
+import { ErrandProps, ProfileProps } from "../types"
 export const returnUnsassignedProducts=async()=>{
   const supabase=await createClient()
   const { data: listedE, error } = await supabase
@@ -10,20 +11,20 @@ return listedE??[]
 }
 export const returnProduct=async(params:string)=>{
   const supabase=await createClient() 
-  const { data: listedX, error } = await supabase
+
+   const { data: listedX, error } = await supabase
   .from('jobs')
   .select('*') 
-  .eq('id', params) 
+  .eq('id', params)
   .single() 
   const { data: p, error:pe } = await supabase
   .from('profiles')
   .select('*')
-  .eq('id', listedX?.accepted_by)
-  .single() 
- 
-return {listedX , p } 
+  .in('id', listedX?.interests)
+
+return {listedX , p } as  { listedX: ErrandProps, p:ProfileProps[]}
 }
-export const relatedProduct=async(location:string, id:number)=>{ 
+export const relatedProduct=async(location:string, id:number|string)=>{ 
   const supabase=await createClient()
   const { data: listedX, error } = await supabase
   .from('jobs')
@@ -33,7 +34,8 @@ export const relatedProduct=async(location:string, id:number)=>{
  
 return listedX??[]
 }
-export const getMyErrands=async(params:string)=>{  
+
+export const getMyErrands=async(params:string|number)=>{  
   const supabase=await createClient()
     const {
     data: { user }
@@ -56,6 +58,7 @@ export const postedBy=async( )=>{
   .from('jobs')
  .select('*') 
  .eq('user_id',user?.id)
+ .neq('status', 'interest')
   
  return listedX??[]
 }
@@ -69,12 +72,15 @@ export const postedBy=async( )=>{
 
     let query = supabase
       .from('jobs')
-      .select('*', { count: 'exact' })
-       .eq('assigned', false)
-       .eq('user_id',user?.id)
+      .select('*', { count: 'exact' }) 
+      .eq('user_id',user?.id)
+      .in('status', ['accepted', 'pending' ,'in progress', 'completed']) 
       .order(sortField, { ascending: sortDir === 'asc' })
       .range((page - 1) * pageSize, page * pageSize - 1);
-
+ {/* .from('invitations')
+  .select('*, clientIs:jobs!invitations_job_id_fkey(*), interestedParty:profiles!invitations_provider_id_fkey(*)') 
+  .eq('client_id', user?.id) 
+  .in('status', ['interest']) */}
     if (search) {
       query = query.ilike('title', `%${search}%`);
     }
@@ -91,6 +97,7 @@ export const postedBy=async( )=>{
     
     return { data , count }
   };
+  
 export const providersBrowseAll = async (sortField:string, sortDir:string, page:number, search:string, pageSize:number, locationFilter:string ) => {
 // filter by Date joined range
 // filter by  Payment thresholds (e.g., clients who paid greater than $500)
@@ -101,7 +108,7 @@ export const providersBrowseAll = async (sortField:string, sortDir:string, page:
     let query = supabase
       .from('jobs')
       .select('*', { count: 'exact' })
-       .eq('assigned', false)
+       .eq('status', 'open')
        .neq('user_id',user?.id)
       .order(sortField, { ascending: sortDir === 'asc' })
       .range((page - 1) * pageSize, page * pageSize - 1);
@@ -125,30 +132,20 @@ export const userReviews=async()=>{
   const supabase=await createClient()
      const {
     data: { user }
-  } = await supabase.auth.getUser() 
-   const { data: listedX, error } = await supabase
-  .from('jobs')
- .select('*') 
- .range(0,2)
- .eq('user_id', user?.id)
- 
-const xlisted = (listedX ?? [])
-  .filter((dy) => dy.accepted_by)
-  .map((dy) => dy.accepted_by);
- 
-const xJobId = (listedX ?? [])
-  .filter((dy) => dy.id)
-  .map((dy) =>  dy.id.toString());
+  } = await supabase.auth.getUser()  
 
-   const { data: listedE, error:errorX } = await supabase
+   const { data: providerRex, error:errorY} = await supabase
   .from('reviews')
   .select('*')
   .range(0,2)
-  .in('provider_id', xlisted?? [] )
- // .in('job_id',xJobId??[])
+  .eq('provider_id', user?.id) 
+
+   const { data: clientRex, error:errorX } = await supabase
+  .from('reviews')
+  .select('*')
+  .range(0,2) 
   .eq('client_id',user?.id)
- 
- return listedE ??[]
+ return {clientRex, providerRex} 
 }
 export const assignedErrands=async()=>{  
  
@@ -175,8 +172,7 @@ const xlisted = (listedX ?? [])
 }
 export const prevClients=async()=>{  
  //NOTE - the user_id here is that of the client not the current user which could be the provider
-   
-    const supabase=await createClient()
+ const supabase=await createClient()
      const {
     data: { user }
   } = await supabase.auth.getUser() 
@@ -215,18 +211,16 @@ export const insertReview=async(rating:number, message:string, identity:string|n
   const { data: listedE, error } = await supabase
   .from('reviews')
   .insert([{
-     rating,
-    message,
-    client_id:user?.id,
-     provider_id :identity , 
-   providerName: full_name,
-   job_id:jobIds,
- job_title:jobTitles
+rating,
+message,
+client_id:user?.id,
+provider_id :identity , 
+providerName: full_name,
+job_id:jobIds,
+job_title:jobTitles
    }])
    .select()
-
-  return { success: true };
-  
+  return { success: true };  
 }
 
 
@@ -248,10 +242,8 @@ export const insertReview=async(rating:number, message:string, identity:string|n
  if (locationFilter) {
       query = query.eq('location', locationFilter);
     }
-
  
   const { data, count, error } = await query;
-
     if (error) {
       console.error(error);
     } 

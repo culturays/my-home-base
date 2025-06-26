@@ -132,8 +132,12 @@ export const resetPasswordAction = async (formData: FormData) => {
 
 export const signOutAction = async () => {
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  return redirect("/sign-in");
+        const {
+    data: { user },
+  } = await supabase.auth.getUser();  
+  const {error} = await supabase.from('roles').update({ active:false }).eq('user_id', user?.id)
+    await supabase.auth.signOut();
+  return redirect("/sign-in/");
 };
 
 export const handleOauthLogin = async () => { 
@@ -151,11 +155,12 @@ export const handleOauthLogin = async () => {
    redirectTo:`${origin}/auth/callback` ,
   }, 
     })
+  
    if (error instanceof Error) {
       console.error(error); 
      //return error.message       
   }
- 
+  
   return redirect(data.url as string);
  };
  

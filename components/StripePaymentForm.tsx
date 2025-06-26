@@ -11,7 +11,7 @@ import {
       case "processing":
       case "requires_payment_method":
       case "requires_confirmation":
-        return <h2>Processing...</h2>;
+        return <h2>Processing...</h2>; 
 
       case "requires_action":
         return <h2>Authenticating...</h2>;
@@ -51,7 +51,7 @@ export default function StripePaymentForm({  jobId }: {jobId: string|number}) {
     const { error } = await stripe.confirmPayment({
     elements,
     confirmParams: { 
-    return_url: `${window.location.origin}/dashboard`,
+    return_url: `${window.location.origin}/dashboard/`,
    payment_method_data: {
    billing_details: {
  
@@ -60,23 +60,21 @@ export default function StripePaymentForm({  jobId }: {jobId: string|number}) {
       },     
  
     });
-
+  
    if (error) { 
        setErrorMessage(error.message ?? "An unknown error occurred");       
     } 
    
- setProcessing(false);
-
+ setProcessing(false); 
+ 
   };
-
-
-//4242 4242 4242 4242
+ 
   return ( 
   <>  
   <form onSubmit={handleSubmit}>  
     <PaymentElement />           
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-      <button type="submit" disabled={processing} className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">
+      <button type="submit" disabled={processing} className="bg-teal-600 text-white px-4 my-3 py-2 rounded hover:bg-teal-700">
         {processing ? 'Processing…' : 'Pay Now'}
       </button> 
       </form>

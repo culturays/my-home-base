@@ -72,6 +72,17 @@
   }
   
 }
+ *::-webkit-scrollbar {
+width:12px;
+height:9px
+}
+
+*::-webkit-scrollbar-thumb {
+background-color:#a6a6b6;
+border-radius: 20px;
+border: 7px solid #a6a6b6;
+
+}
 body{
   overflow:hidden;
   font-size:100%;

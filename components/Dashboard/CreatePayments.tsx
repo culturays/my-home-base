@@ -58,7 +58,7 @@ const pendingPays = paymentData.filter((xy)=> xy.status==='pending')
               {payment.status === 'pending' && (
  <td><a
     href={`/payment/${payment.id}`}
-    className="inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 mt-4"
+    className="inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 m-4"
   >
     Pay Now
   </a></td>

@@ -20,10 +20,10 @@ export default async function AuthButton() {
   
   : (
     <div className="flex gap-2">
-              <Button asChild size="sm" variant={"outline"} className="text-teal-800 font-medium">
+              <Button asChild size="sm" variant={"outline"} className="dark:text-white text-teal-300 font-medium">
         <Link href="/sign-in">Sign in</Link>
       </Button>
-      <Button asChild size="sm"className="bg-orange-800">
+      <Button asChild size="sm"className="bg-orange-400 dark:text-white">
         <Link href="/sign-up">Sign up</Link>
       </Button> 
     </div>

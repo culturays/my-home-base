@@ -1,14 +1,8 @@
 import { createClient } from '@/utils/supabase/server';
-import { type User } from '@supabase/supabase-js'
-import ImageInput from '@/components/ImageInput';
+import { type User } from '@supabase/supabase-js' 
 import Create from '@/components/Dashboard/Create';
 import { returnProduct } from '@/app/products/return-products';
-
-type DataProps={
-  name: string, 
-    desc: string,
-   
-}
+ 
 const userObj =async()=>{
     const supabase =await createClient();
     const { 
@@ -18,10 +12,10 @@ const userObj =async()=>{
       return user as User
   }
 const CreateProduct= async ({searchParams}: {
-  searchParams: Promise<{ message: string, id: string }>})=> { 
-     const {message}=await searchParams || ''
-     const {id}= await searchParams || ''
-  const user = await userObj();
+searchParams: Promise<{ message: string, id: string }>})=> { 
+const {message}=await searchParams || ''
+const {id}= await searchParams || ''
+const user = await userObj();
 const jobEdit=await returnProduct(id)
   return (
 <><Create message={message} user={user} id={id}jobEdit={jobEdit?.listedX} /> </>

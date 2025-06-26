@@ -1,6 +1,5 @@
 export type ProfileProps = {
 stripe_customer_id:string 
-role:string 
 id:string|number
 full_name:string
 email:string
@@ -16,7 +15,18 @@ address:string
 avatar_url:string
 bio:string
 location:string
+pending_payments:string
+reviews:string[]
+role:string
+profileItems:RolesProps
 };
+export type RolesProps={
+  id:number
+role:string
+active:boolean
+user_id:string|number
+profileByRole:ProfileProps
+}
 export type NotifyProps={
   id:string|number
   message:string  
@@ -28,6 +38,9 @@ export type InviteProps={
  status: 'pending' | 'accepted' | 'rejected' | 'interest'; 
   invited_at: string; 
 id:number|string
+user_id:string|number
+interest_id:string|number
+client_id:string|number
    job: {
     title: string;
     description: string;
@@ -91,7 +104,8 @@ contact:number
 cost:number
 amount:number
 errandType:string
-clientIs:{id:string|number}
+clientIs:{id:string|number, interest_id:string|number}
+interestedParty:{id:string|number }
 providerJobs:{id:string|number}
 payment_status:string 
 }

@@ -8,18 +8,18 @@ import Link from "next/link";
         <p className="text-lg mb-6 max-w-2xl mx-auto">
           Connect with trusted service providers near you — fast, reliable, and secure.
         </p>
-        <div className="space-x-4">
-          <a href="/services" className="bg-orange-500 px-6 py-3 rounded-lg text-white font-semibold shadow hover:bg-orange-600">
+        <div className="space-4 xs:flex justify-center">
+         <p className="bg-orange-500 m-2 px-6 py-3 rounded-lg text-white font-semibold shadow hover:bg-orange-600"><Link href="/services/">
             Browse Services
-          </a>
-          <a href="/dashboard/create" className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600">
+          </Link></p>
+        <p className="border border-white m-2 px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600"><Link href="/dashboard/create/">
             Post a Request
-          </a>
+          </Link></p> 
         </div>
       </section>
  
       <section className="py-16 px-6 mx-auto">
-        <h2 className="text-3xl font-bold text-teal-700 mb-8 text-center">Popular Services</h2>
+        <h2 className="text-3xl font-bold text-teal-700 mb-8 text-center dark:text-white">Catalogue</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[
            
@@ -36,7 +36,7 @@ import Link from "next/link";
             <div key={i} className="p-6 rounded-xl shadow">
               <div className="text-3xl mb-3">{service.icon}</div>
               <h3 className="text-lg font-bold text-orange-600">{service.title}</h3>
-              <p className="text-sm whitespace-pre-line">{service.desc}</p>
+              <p className="my-2 whitespace-pre-line dark:text-white">{service.desc}</p>
             </div>
           ))}
         </div>

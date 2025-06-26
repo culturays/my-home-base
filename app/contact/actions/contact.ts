@@ -1,6 +1,7 @@
 "use server"
 import { createClient } from "@/utils/supabase/server"; 
 import sgMail from '@sendgrid/mail'; 
+import { redirect } from "next/navigation";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 export async function siteContacts(formData:FormData){
@@ -39,7 +40,7 @@ export async function siteContacts(formData:FormData){
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
       <!-- Header -->
       <div style="background-color: #0d9488; padding: 20px; text-align: center;">
-        <img src="/logo.png" alt="Company Logo" style="height: 50px;" />
+        <img src="/logo-t.JPG" alt="GoWork" style="height: 50px;" />
         <h2 style="color: white; margin-top: 10px;">Thank you for contacting us!</h2>
       </div>
 
@@ -56,19 +57,23 @@ export async function siteContacts(formData:FormData){
         </div>
 
         <p style="margin-top: 24px; font-size: 14px; color: #888;">We’ll be in touch soon!</p>
-        <p style="font-size: 14px; color: #888;">— The YourCompany Team</p>
+        <p style="font-size: 14px; color: #888;">— The GoWork Team</p>
       </div>
 
       <!-- Footer -->
       <div style="background-color: #f0fdfa; padding: 12px; text-align: center; font-size: 12px; color: #666;">
-        © ${new Date().getFullYear()} YourCompany · <a href="https://my-home-base.vercel.app/" style="color: #0d9488;">https://my-home-base.vercel.app/</a>
+        © ${new Date().getFullYear()} GoWork · <a href="https://gowork.africareinvented.com/" style="color: #0d9488;">GoWork</a>
       </div>
     </div>
   `,
 });
 
   } catch (sendError) {
-    // console.error('SendGrid error:', sendError);
-    // return res.status(500).json({ error: 'Message saved but email failed' });
+   console.error('SendGrid error:', sendError);
+     if(sendError){
+     return { message: 'Message saved but email failed'};
+  }   
   }
+
+  return { message: 'Message Sent'};
   }

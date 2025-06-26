@@ -91,7 +91,7 @@ onBlur={(e) =>handleFocus(e)}
           <Label htmlFor="password"  className="text-lg font-medium text-gray-700">Password</Label>
           <Link
             className="text-xs text-foreground underline text-3xl font-bold text-teal-600"
-            href="/forgot-password"
+            href="/forgot-password/"
           >
             Forgot Password?
           </Link>
@@ -113,11 +113,11 @@ onBlur={(e) =>handleFocus(e)}
 }
 {errors.password&&
 <ul className=" m-4">
-<li className="list-disc p-1">At least two uppercase letters.</li>
-<li className="list-disc p-1">At least one special character from the set !@#$&*.</li>
-<li className="list-disc p-1">At least two digits.</li>
-<li className="list-disc p-1">At least three lowercase letters.</li>
-<li className="list-disc p-1">Length between 8 and 20 characters.</li>
+<li className="list-disc p-1 text-black">At least two uppercase letters.</li>
+<li className="list-disc p-1 text-black">At least one special character from the set !@#$&*.</li>
+<li className="list-disc p-1 text-black">At least two digits.</li>
+<li className="list-disc p-1 text-black">At least three lowercase letters.</li>
+<li className="list-disc p-1 text-black">Length between 8 and 20 characters.</li>
 </ul>}
 
        <Label htmlFor="email" className="text-lg font-medium text-gray-700">Role</Label>

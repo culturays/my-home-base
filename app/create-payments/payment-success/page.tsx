@@ -7,7 +7,8 @@ const ResultPage=async({
   searchParams:  Promise<{ payment_intent: string }>;
 }) =>{
   const { payment_intent }=await searchParams
-  if (!payment_intent)
+ 
+  if (!payment_intent) 
     throw new Error("Please provide a valid payment_intent (`pi_...`)");
 
   const paymentIntent: Stripe.PaymentIntent =
