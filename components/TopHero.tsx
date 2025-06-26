@@ -7,7 +7,7 @@ const TopHero = () => {
         <video width="320" height="240"  
           className="w-full h-[550px] object-cover"
           controls
-          //autoPlay={true}
+          autoPlay={true}
           loop>
   <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
   <source src="/nuttis-errands-short.mp4" type="video/mp4"/>
