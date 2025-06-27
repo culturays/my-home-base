@@ -10,7 +10,7 @@ const AboutPage = async () => {
   const { data: userRole } = await supabase
     .from('roles')
     .select('*, profileItems:profiles!roles_user_id_fkey(*)')
-    .eq('user_id', user.id)
+    .eq('user_id', user?.id)
     .single()
  
     return userRole
@@ -43,7 +43,7 @@ const userAdminRoles= await roleData()
         <div className="grid md:grid-cols-3 gap-6">
           <div className="text-center">
             <Image src="/popcorn.png" alt="Team Member 1" width={150} height={150} className="mx-auto rounded-full" />
-            <p className="font-bold mt-2">{userAdminRoles.profileItems.full_name}</p>
+            <p className="font-bold mt-2">{userAdminRoles?.profileItems?.full_name}</p>
             <p className="text-sm ">Operations Lead</p>
           </div>    
        
