@@ -12,7 +12,7 @@ import Link from "next/link";
          <p className="bg-orange-500 m-2 px-6 py-3 rounded-lg text-white font-semibold shadow hover:bg-orange-600"><Link href="/services/">
             Browse Services
           </Link></p>
-        <p className="border border-white m-2 px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600"><Link href="/dashboard/create/">
+        <p className="border border-white m-2 px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600"><Link href="/dashboard/">
             Post a Request
           </Link></p> 
         </div>

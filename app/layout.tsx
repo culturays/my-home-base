@@ -91,21 +91,16 @@ const geistSans = Geist({
   display: "swap",
   subsets: ["latin"],
 });
- 
-// <script>
-//   window.dataLayer = window.dataLayer || [];
-//   function gtag(){dataLayer.push(arguments);}
-//   gtag('js', new Date());
-
-//   gtag('config', 'AW-782298154');
-// </script>
+ //On-demand labor platform for small tasks
+ //On-demand job platform for menial work
+ //A platform that connects busy clients with trusted providers for basic tasks.
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning><Script async strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GTAG}`}/><Script id='google-analytics'strategy="afterInteractive"
+    <html lang="en" className={geistSans.className} suppressHydrationWarning><Script async strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GTAG}`}/><Script id='google-analytics' strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                 __html: `
                 window.dataLayer = window.dataLayer || [];
