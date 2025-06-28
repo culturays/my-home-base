@@ -8,8 +8,8 @@ export default async function ContactFormPage() {
 
  
   return (
-    <div className="min-h-screen bg-teal-50 dark:bg-gray-900 py-16 px-4 sm:px-6 lg:px-8 w-[600px] mx-auto">
-      <div className="max-w-3xl">
+    <div className="min-h-screen bg-teal-50 dark:bg-gray-900 py-16 px-4 sm:px-6 lg:px-8 xs:w-[400px]sm:w-[600px] mx-auto">
+      <div className="">
         <h2 className="text-3xl font-extrabold text-teal-800 dark:text-teal-300">Contact Us</h2>
         <p className="mt-4 text-lg text-teal-700 dark:text-teal-400">
           We'd love to hear from you!
