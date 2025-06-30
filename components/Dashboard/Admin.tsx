@@ -34,9 +34,9 @@ router.refresh()
 
   return (
  
-    <div className="">
+      <div className="">  
    <h1 className="text-2xl font-bold mb-6 text-teal-700 dark:text-white">Admin Dashboard: Member Management</h1> 
- <form className="mb-6 flex items-center gap-4" action={invsAxn}>
+ <form className="mb-6 max-w-sm sm:max-w-xl flex flex-wrap items-center gap-4" action={invsAxn}>
         <input
           type="email" 
           name="email"
@@ -51,7 +51,7 @@ router.refresh()
           Send Admin Invite
         </button>
       </form>
-      <div className="mb-6 flex items-right gap-4 w-full justify-end"> 
+      <div className="mb-6 flex lg:items-right gap-4 w-full lg:justify-end"> 
         <input
           type="text"
           placeholder="Filter by email or role"
@@ -60,12 +60,12 @@ router.refresh()
           className="border p-2 rounded mr-2 border border-teal-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition text-lg"
         />
       </div>
-
+ 
       {/* Admin Invites Section */}
       <h2 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">
         Pending Admin Invites
       </h2>
-      <table className="min-w-[600px] mb-8 bg-white dark:bg-gray-800 border">
+      <table className="sm:min-w-[400px] mb-8 bg-white dark:bg-gray-800 border">
         <thead>
           <tr className="bg-purple-100 dark:bg-gray-400">
             <th className="py-2 px-4 border">Email</th>
@@ -88,12 +88,10 @@ router.refresh()
           ))}
         </tbody>
       </table>
-  
-      {/* Members Table */}
-  
-   <table className="min-w-full bg-white dark:bg-gray-800 border">
-        <thead>
-          <tr className="bg-teal-600"> 
+<div className="w-full overflow-x-auto">
+  <table className="min-w-[1200px] table-auto bg-white dark:bg-gray-800 border"> 
+       <thead>
+          <tr className="bg-teal-600 text-white"> 
             <th className="py-2 px-4 border">...</th>
             <th className="py-2 px-4 border">Full Name</th>
             <th className="py-2 px-4 border">Email</th>
@@ -103,12 +101,13 @@ router.refresh()
             <th className="py-2 px-4 border">Actions</th> 
           </tr>
         </thead>
-        <tbody>
+
+        <tbody className="">
           {filter.length>0?filteredMembers.map((member) => (
             <tr key={member.id} className="text-sm">
-              <td className="py-2 px-4 border">{member.full_name || '—'}</td>
-              <td className="py-2 px-4 border">{member.email}</td>
-              <td className="py-2 px-4 border capitalize">{member.role|| '——'}</td>
+              <td className="py-2 border">{member.full_name || '—'}</td>
+              <td className="py-2 border">{member.email}</td>
+              <td className="py-2 border capitalize">{member.role|| '——'}</td>
    <td className="py-2 px-4 border">
               {member.role === 'admin' ? '—' : `${member.jobs?.length || 0} job(s)`}
              </td>
@@ -170,7 +169,7 @@ router.refresh()
                 >
                   Make Provider
                 </button>
-             {member.role === 'admin' ?  <button
+                 {member.role === 'admin' ?  <button
                   onClick={() => uptAxn(member.id, 'none')}
                   className="bg-yellow-500 text-white px-2 py-1 rounded"
                 >
@@ -191,8 +190,10 @@ router.refresh()
             </tr>
           ))}
         </tbody>
-      </table>  
-    </div> 
+      </table> 
+   </div>
+      </div>
+ 
   )
 }
 

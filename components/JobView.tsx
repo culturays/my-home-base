@@ -2,31 +2,18 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ErrandProps, ProfileProps } from "@/app/types";
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import StripePaymentForm from '@/components/StripePaymentForm'; 
+import { ErrandProps, PaymentProps, ProfileProps } from "@/app/types"; 
 import { deleteData } from "@/app/dashboard/actions/get-listed-items";
-import { useRouter } from "next/navigation";
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!); 
+import { useRouter } from "next/navigation";  
 
-const JobView = ({product, user_errands, related, id, data }:{product:ErrandProps, user_errands:ErrandProps[],related:ErrandProps[], id:number|string, data:ProfileProps}) => {
-  const [clientSecret, setClientSecret] = useState('');
- const [showEl, setShowEl]=useState(false)
- const router= useRouter()
-  useEffect(() => { 
-  fetch(`/api/stripe/create-payment-intent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, amount:product.amount, email:data?.email, user_full_name:data?.full_name, job_title:product.title, user_id:data?.id }),
-    })
-      .then((res) => res.json()) 
-      .then((data) => 
-       setClientSecret(data.clientSecret)
-     );
+const JobView = ({product, id, data }:{product:ErrandProps, id:number|string, data:ProfileProps}) => {
  
-return
-  }, [product]);
+const [email, setEmail] = useState('')
+const [amount, setAmount] = useState(0)
+const [method, setMethod] = useState('bank')
+const [response, setResponse] = useState<PaymentProps>()
+const [showEl, setShowEl]=useState(false)
+const router= useRouter() 
 
 const actionElement=()=>{
 if(product.user_id === data?.id){
@@ -38,9 +25,27 @@ if(product.user_id === data?.id){
    deleteData(data?.id)
 }
 }
- 
- const appearance = { theme: 'stripe' as "flat" | "stripe" | "night" | undefined} ; 
-  return clientSecret ? (
+
+
+  const handleCheckout = async () => {
+//     email
+// amount
+// job_id
+// job_title
+// user_id
+  fetch('/api/create-order', {
+      method: 'POST',
+      body: JSON.stringify({ id, amount:product.amount, email:data?.email, job_title:product.title, user_id:data?.id }),
+      headers: { 'Content-Type': 'application/json' }
+    }).then((res) => res.json()) 
+      .then((data) => 
+        setResponse(data)
+     );
+    
+return
+  }
+  
+  return(
    <div> 
    <div className="max-w-5xl m-auto"> 
   {product.user_id === data?.id
@@ -68,49 +73,37 @@ if(product.user_id === data?.id){
         Delete
       </button>
      </>}
-  {showEl&& <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
-      <StripePaymentForm jobId={id} />   
-    </Elements>} 
-      </div> 
-    <main className="max-w-6xl mx-auto px-4 py-10"> 
-       <div className="max-w-4xl mx-auto py-6">
-      <h1 className="text-3xl mb-4">Your Pending Payments</h1>
-      {user_errands.length === 0 ? (
-        <p>...</p>
-      ) : (
-        <> 
-     <div className="max-w-4xl mx-auto mt-10 p-4 bg-white dark:bg-black shadow-lg rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Product List</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-left border border-gray-200">
-          <thead className="bg-teal-600">
-            <tr>
-              <th className="px-4 py-2 border-b">ID</th>
-              <th className="px-4 py-2 border-b">Name</th>
-              <th className="px-4 py-2 border-b">Price (₦)</th>
-              
-            </tr>
-          </thead>
-          <tbody>
-            {user_errands.map((product) => (
-              <tr key={product.id} className="hover:text-gray-50">
-                <td className="px-4 py-2 border-b">Item: {product.id}</td>
-                <td className="px-4 py-2 border-b">{product.title}</td>
-                <td className="px-4 py-2 border-b">₦{product.amount.toLocaleString()}</td> 
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
- </>
-      )}
-    </div> 
-    </main> 
-    </div>
-  ) : (
+     
+     {showEl?
+       <div className="p-4 space-y-4 max-w-md mx-auto border rounded-xl shadow">
+        <div>  
+</div>
+    {product.accepted_by&&  <input value={product.accepted_by}disabled placeholder="Your email" className="border p-2 w-full" />}
+      <input type="number" value={product.amount} disabled placeholder="Amount" className="border p-2 w-full" />
+      <select className="border p-2 w-full">
+        <option value="bank">Bank Transfer</option> 
+      </select>
+      <button onClick={handleCheckout} className="bg-blue-500 text-white px-4 py-2 rounded">Checkout</button>
+ {response ? (
+        <div className="mt-4 p-4 bg-gray-100 border rounded">
+          <p><strong>Order Reference:</strong> {response.reference}</p>
+          <p><strong>Amount:</strong> ₦{product.amount}</p>
+          <p><strong>Payment Method:</strong> Bank Transfer </p>
+           <p><strong>Send To:</strong>GoWork Marketplace, FirstBank Nigeria, Acct: 1234567890</p>
+            <p><strong>Use Reference:</strong> {response.reference}</p>
+           
+        </div>
+      ):  (
     <p>Loading...</p>
-  ); 
+  )} 
+    </div>:  (
+    <p>Loading...</p>
+  ) }
+ 
+      </div> 
+
+    </div>
+  )
  
 }
 

@@ -6,7 +6,7 @@ export const payOutData = async ()=>{
   // Query sellers with pending payouts and sum amounts
   const { data, error } = await supabase
     .from('jobs')
-    .select('accepted_by, profiles(email, stripe_account_id), amount')
+    .select('accepted_by, profiles(email, ), amount')
     .eq('status', 'paid')
     .eq('payment_status', 'pending')
     .neq('accepted_by', null);
@@ -16,17 +16,16 @@ export const payOutData = async ()=>{
   // Aggregate pending amounts per seller
   const sellersMap = new Map();
 
-  data.forEach(({ accepted_by, amount, profiles }) => {
-    if (!sellersMap.has(accepted_by)) {
-      sellersMap.set(accepted_by, {
-        id: accepted_by,
-        email: profiles,
-        stripe_account_id: profiles,
-        pendingAmount: 0,
-      });
-    }
-    sellersMap.get(accepted_by).pendingAmount += amount;
-  }); 
+  // data.forEach(({ accepted_by, amount, profiles }) => {
+  //   if (!sellersMap.has(accepted_by)) {
+  //     sellersMap.set(accepted_by, {
+  //       id: accepted_by,
+  //       email: profiles, 
+  //       pendingAmount: 0,
+  //     });
+  //   }
+  //   sellersMap.get(accepted_by).pendingAmount += amount;
+  // }); 
   return { sellers: Array.from(sellersMap.values()) }
 }
   

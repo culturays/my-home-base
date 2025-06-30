@@ -1,5 +1,4 @@
-export type ProfileProps = {
-stripe_customer_id:string 
+export type ProfileProps = { 
 id:string|number
 full_name:string
 email:string
@@ -83,6 +82,7 @@ export type PaymentProps = {
   last_payment_amount:number
   last_payment_date:Date
    user_id:number|string
+   reference:string
 };
 export type ErrandProps={
 email:string

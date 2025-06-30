@@ -32,7 +32,7 @@ const Privacy = () => {
       </p>
       <ul className="list-disc pl-6 mb-4">
         <li>Google (e.g. for analytics or ads).</li>
-        <li>Payment providers (e.g. Stripe, Paystack).</li>
+        <li>Payment providers.</li>
         <li>Shipping or logistics partners (for delivery).</li>
         <li>Government or legal authorities if required.</li>
       </ul>

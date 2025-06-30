@@ -1,10 +1,8 @@
  "use client"
-import { loadStripe } from '@stripe/stripe-js'; 
+ 
 import { PaymentProps } from "@/app/types";
-import { useEffect, useState } from "react";
-import StripePaymentForm from '../StripePaymentForm';
-import { Elements } from '@stripe/react-stripe-js';
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!); 
+import { useEffect, useState } from "react"; 
+ 
 const CreatePayments = ({paymentData}:{paymentData:PaymentProps[]}) => {
 const [clientSecret, setClientSecret] = useState('');
 // const [jobId, setJobId] = useState(0);
@@ -19,7 +17,7 @@ const [clientSecret, setClientSecret] = useState('');
   
 //  }, [jobId]);
  
-//     const appearance = { theme: 'stripe' as "flat" | "stripe" | "night" | undefined};
+//     const appearance = { theme: ' ' as "flat" | " " | "night" | undefined};
 const pendingPays = paymentData.filter((xy)=> xy.status==='pending')
   return  (
     <div >
@@ -68,10 +66,7 @@ const pendingPays = paymentData.filter((xy)=> xy.status==='pending')
         </tbody>
       </table>
     </div> 
-{/*   
-    <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
- <StripePaymentForm jobId={jobId} />
-   </Elements> */}
+ 
     </div>
   ) 
 }

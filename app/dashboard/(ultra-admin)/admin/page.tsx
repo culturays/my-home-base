@@ -48,9 +48,10 @@ const fetchMembers = async () => {
  
   return (
     <>
-  <div className='w-[1200px] mx-auto px-4 py-8'> 
+  <div className='   px-4 py-8'> 
+    
   <Admin user={user} members={membersPayments} invitesX={invitesX} />  
-  </div>
+ </div>
     </> );
 }
 export default AdminPage 

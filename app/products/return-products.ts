@@ -72,15 +72,11 @@ export const postedBy=async( )=>{
 
     let query = supabase
       .from('jobs')
-      .select('*', { count: 'exact' }) 
-      .eq('user_id',user?.id)
+      .select('*', { count: 'exact' })  
       .in('status', ['open','accepted', 'pending' ,'in progress', 'completed']) 
       .order(sortField, { ascending: sortDir === 'asc' })
       .range((page - 1) * pageSize, page * pageSize - 1);
- {/* .from('invitations')
-  .select('*, clientIs:jobs!invitations_job_id_fkey(*), interestedParty:profiles!invitations_provider_id_fkey(*)') 
-  .eq('client_id', user?.id) 
-  .in('status', ['interest']) */}
+ 
     if (search) {
       query = query.ilike('title', `%${search}%`);
     }

@@ -1,5 +1,5 @@
 "use server"
-import { ProfileProps } from "@/app/types";
+import { ErrandProps, ProfileProps } from "@/app/types";
 import { createClient } from "@/utils/supabase/server"; 
 import { type User } from "@supabase/supabase-js"; 
 
@@ -10,7 +10,7 @@ import { type User } from "@supabase/supabase-js";
     { email}
   ])
   .select()
- 
+  
  const response=  await fetch('http://localhost:3000/api/email-admin-invite', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -20,8 +20,43 @@ import { type User } from "@supabase/supabase-js";
  
    if(error)console.log(error.message)
   };
+ export const markTransaction = async (u:ErrandProps) => {  
+     const supabase = await createClient()
+     const { 
+data: { user }, 
+} = await supabase.auth.getUser();
+      const {data, error: insertError } = await supabase.from('payments').insert([
+      {
+      job_id: u.id, 
+        email:user?.email,
+        amount: u.amount,
+        status: 'paid',
+        job_title:u.title,
+        last_payment_date:new Date(),
+        last_payment_amount:u.amount,
+        user_id:user?.id
+      },
+    ]);
+   
+   const {error}= await supabase.from('jobs') 
+      .update({
+        amount:u.amount,
+        payment_status: 'paid', 
+        paid_at: new Date(),
+        status: 'completed',
+      })
+      .eq('id', u.id)
+      .select()  
+ const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ 
+        jobs_completed:u.id,
+      })
+      .eq('id', user?.id);  
+
+  };
   export const getIvs = async () => {    
-    const supabase = await createClient()
+  const supabase = await createClient()
   const { data , error } = await supabase
     .from('admin_invites')
     .select('*')

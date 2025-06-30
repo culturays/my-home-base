@@ -56,14 +56,14 @@ return (
   <Invites product={product.p} invitedX={invitedX} job={product.listedX} />
   <div className='max-w-lg'>
  <div className="rounded-xl overflow-hidden shadow-lg">
-  { product.listedX.images.length>0&& <Image
+  { product.listedX.images?.length>0&& <Image
       src={`https://cgdonystqsigvcjbdxvk.supabase.co/storage/v1/object/public/files/${product.listedX.images[0]}`}
       alt={product.listedX.title}
     width={700}
     height={350}
       className="rounded-xl"
     />}
-     {product.listedX.images.length===0&& <Image
+     {product.listedX.images?.length===0&& <Image
       src='/popcorn.png'
       alt={product.listedX.title}
     width={700}
@@ -103,8 +103,43 @@ return (
   </div> 
 
 </section>
- <JobView product={product.listedX} user_errands={user_errands} related={related} id={id} data={data} />
-  <section>
+ <JobView product={product.listedX} id={id} data={data} /> 
+  <main className="max-w-6xl mx-auto py-10"> 
+       <div className="max-w-4xl mx-auto py-6">
+      <h1 className="text-2xl font-serif mb-6">Your Pending Payments</h1>
+      {user_errands.length === 0 ? (
+        <p>...</p>
+      ) : (
+        <> 
+     <div className="max-w-4xl mx-auto mt-10 p-4 bg-white dark:bg-black shadow-lg rounded-lg">
+      <h2 className="text-xl font-bold mb-4">Product List</h2>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-left border border-gray-200">
+          <thead className="bg-teal-600">
+            <tr>
+              <th className="px-4 py-2 border-b">ID</th>
+              <th className="px-4 py-2 border-b">Name</th>
+              <th className="px-4 py-2 border-b">Price (₦)</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {user_errands.map((product) => (
+              <tr key={product.id} className="hover:text-gray-50">
+                <td className="px-4 py-2 border-b">Item: {product.id}</td>
+                <td className="px-4 py-2 border-b">{product.title}</td>
+                <td className="px-4 py-2 border-b">₦{product.amount.toLocaleString()}</td> 
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+ </>
+      )}
+    </div> 
+    </main> 
+  <section className='my-11'>
         <h2 className="text-2xl font-serif mb-6">Related Chores</h2>
           <div className="flex flex-col lg:flex-row gap-4">
             {related.map((item)=> (
@@ -119,6 +154,7 @@ return (
           ))}  
         </div>  
       </section>
+ 
   </div>
     );
 };

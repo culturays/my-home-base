@@ -20,7 +20,7 @@ export default function Footer() {
 
         {/* Column 2 */}
         <div className="text-center flex flex-col items-center justify-center">
-          <p className="text-xs">&copy; {new Date().getFullYear()} E Market. All rights reserved.</p>
+          <p className="text-xs">&copy; {new Date().getFullYear()} GoWork. All rights reserved.</p>
           <ThemeSwitcher />
         </div>
 
