@@ -150,7 +150,7 @@ const JobsTable=({jobsPosted, paymentsT, clientX, providersX, jobsCompleted}:{jo
       </div>
  
         <div className="w-full overflow-x-auto py-8">
-      <table className={`${darkMode ?"min-w-[1300px] border dark:bg-gray-800":"min-w-[1300px] border dark:bg-gray-100"}`}>
+      <table className={`${darkMode ?"min-w-[1300px] m-auto border dark:bg-gray-800":"min-w-[1300px] m-auto border dark:bg-gray-100"}`}>
         <thead>
           <tr className="bg-teal-600 text-white text-left text-sm">
             {['Id', 'Title', 'Email', 'Description', 'Date', 'Deadline', 'Amount', 'Status', "Payment Status", "Accepted By", 'Action'].map((label, i) => {
