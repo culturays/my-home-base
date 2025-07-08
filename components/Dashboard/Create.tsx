@@ -46,13 +46,16 @@ async function handleFormAction(prevState: any, formData: FormData) {
     const savedData = localStorage.getItem('myForm');
     if (savedData) {
       setFormValue(JSON.parse(savedData));
-    }
+    }else{
+localStorage.setItem('myForm', '');
+}
   }, []); 
 
   // Save value on change
   useEffect(() => {
    localStorage.setItem('myForm', JSON.stringify(inputValue));
   }, [inputValue]);
+
     const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.currentTarget;
     setFormValue((prevData) => ({
@@ -81,21 +84,23 @@ onChange={handleChange}
 />
 </div>
 
-<div className="text-lg py-2 flex gap-2 justify-center">
-  <div className="max-w-xs"> 
+<div className="text-lg py-2 sm:flex gap-2 justify-center space-y-2">
+  <div className="max-w-xs m-auto"> 
 <label htmlFor="location">Errand Location</label>
 <input name="location" placeholder="Location" type='text' className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700 w-72 block"
 value={inputValue.location||jobEdit?.location||''}
 onChange={handleChange} /></div>
-<div className="max-w-xs "> 
+<div className="max-w-xs m-auto"> 
 <label htmlFor="location">State</label>
  <select className="input focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 py-2 dark:bg-gray-50 dark:text-gray-700 w-72 block"
            value={inputValue.state||''}
            name='state'
             onChange={handleChange} > 
+             <option className="font-bold"> — Cape Verde</option>
              {locations.capeVerde.map(loc => (
                      <option key={loc.island} value={loc.island}>{loc.island}</option>
                      ))} 
+                     <option className="font-bold"> — Nigeria</option>
                       {locations.nigeria.map(loc => (
                      <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
                      ))}  

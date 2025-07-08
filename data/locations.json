@@ -1,5 +1,5 @@
 {"nigeria": [
-  { "state": "", "capital": "Choose" },
+  { "state": "Country", "capital": "Nigeria" },
   { "state": "Abia", "capital": "Umuahia" },
   { "state": "Adamawa", "capital": "Yola" },
   { "state": "Akwa Ibom", "capital": "Uyo" },
