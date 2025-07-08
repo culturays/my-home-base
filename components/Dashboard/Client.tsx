@@ -287,9 +287,12 @@ const fetchXview=async()=>{
             setPage(1); 
             setStateFilter(e.target.value);
           }}> 
-          {locations.map(loc => (
-          <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
+           {locations.capeVerde.map(loc => (
+          <option key={loc.island} value={loc.island}>{loc.island}</option>
           ))} 
+         {locations.nigeria.map(loc => (
+          <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
+          ))}  
 </select>
  
       </div>

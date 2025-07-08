@@ -1,4 +1,4 @@
-[
+{"nigeria": [
   { "state": "", "capital": "Choose" },
   { "state": "Abia", "capital": "Umuahia" },
   { "state": "Adamawa", "capital": "Yola" },
@@ -37,4 +37,51 @@
   { "state": "Yobe", "capital": "Damaturu" },
   { "state": "Zamfara", "capital": "Gusau" },
   { "state": "FCT", "capital": "Abuja" }
-] 
+],
+
+"capeVerde":[
+  {
+    "island": "Santiago",
+    "cities": ["Praia", "Assomada", "São Domingos", "Santa Cruz", "Tarrafal"]
+  },
+  {
+    "island": "São Vicente",
+    "cities": ["Mindelo", "São Pedro", "Salamansa"]
+  },
+  {
+    "island": "Santo Antão",
+    "cities": ["Porto Novo", "Ribeira Grande", "Ponta do Sol", "Paúl"]
+  },
+  {
+    "island": "Fogo",
+    "cities": ["São Filipe", "Mosteiros", "Cova Figueira"]
+  },
+  {
+    "island": "Sal",
+    "cities": ["Espargos", "Santa Maria", "Palmeira"]
+  },
+  {
+    "island": "Boa Vista",
+    "cities": ["Sal Rei", "Rabil", "Bofareira"]
+  },
+  {
+    "island": "Maio",
+    "cities": ["Porto Inglês", "Calheta", "Morrinho"]
+  },
+  {
+    "island": "Brava",
+    "cities": ["Nova Sintra", "Fajã de Água", "Cachaço"]
+  },
+  {
+    "island": "São Nicolau",
+    "cities": ["Ribeira Brava", "Tarrafal de São Nicolau"]
+  },
+  {
+    "island": "Santa Luzia",
+    "cities": []
+  }
+]
+}
+
+
+

@@ -93,9 +93,12 @@ onChange={handleChange} /></div>
            value={inputValue.state||''}
            name='state'
             onChange={handleChange} > 
-            {locations.map(loc => (
-            <option key={loc.state} value={loc.state}>{loc.capital}</option>
-            ))} 
+             {locations.capeVerde.map(loc => (
+                     <option key={loc.island} value={loc.island}>{loc.island}</option>
+                     ))} 
+                      {locations.nigeria.map(loc => (
+                     <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
+                     ))}  
   </select>
   </div>
 </div>

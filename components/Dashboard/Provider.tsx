@@ -296,7 +296,10 @@ star <= review.rating ? 'text-yellow-500' : 'text-gray-300'
             setPage(1); 
             setStateFilter(e.target.value);
           }}> 
-          {locations.map(loc => (
+           {locations.capeVerde.map(loc => (
+          <option key={loc.island} value={loc.island}>{loc.island}</option>
+          ))} 
+           {locations.nigeria.map(loc => (
           <option key={loc.state} value={loc.state}>{loc.state} — {loc.capital}</option>
           ))} 
 </select>
